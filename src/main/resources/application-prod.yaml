@@ -9,4 +9,4 @@ spring:
       chroma:
         client:
           host: http://selp-chroma-db
-          port: 3306
+          port: 8000
