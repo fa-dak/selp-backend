@@ -8,5 +8,5 @@ spring:
     vector-store:
       chroma:
         client:
-          host: http://selp-mysql-db
+          host: http://selp-chroma-db
           port: 3306
