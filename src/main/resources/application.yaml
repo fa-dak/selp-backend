@@ -36,9 +36,7 @@ spring:
         database-name: SpringAiDatabase
         collection-name: SpringAiCollection
         client:
-          host: ${PROD_CHROMA_HOST}
           key-token: ${PROD_CHROMA_TOKEN}
-          port: 443
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

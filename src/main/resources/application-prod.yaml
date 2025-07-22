@@ -1,5 +1,12 @@
 spring:
   datasource:
-    url: jdbc:mysql://${PROD_MYSQL_DB_HOST}/${PROD_MYSQL_DB_NAME}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://selp-mysql-db:3306/selp_prod?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${PROD_MYSQL_DB_USERNAME}
     password: ${PROD_MYSQL_DB_PASSWORD}
+
+  ai:
+    vector-store:
+      chroma:
+        client:
+          host: http://selp-mysql-db
+          port: 3306

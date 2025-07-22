@@ -1,5 +1,12 @@
 spring:
   datasource:
-    url: jdbc:mysql://${LOCAL_MYSQL_DB_HOST}/${LOCAL_MYSQL_DB_NAME}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://${LOCAL_MYSQL_DB_HOST}/selp_prod?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${LOCAL_MYSQL_DB_USERNAME}
     password: ${LOCAL_MYSQL_DB_PASSWORD}
+
+  ai:
+    vector-store:
+      chroma:
+        client:
+          host: https://selp-chroma.jaeyoung2.duckdns.org
+          port: 443
