@@ -31,7 +31,7 @@ public class Product extends BaseEntity {
     @Column(name = "B_CATEGORY")
     private String bCategory;
 
-    @Column(name = "S_CATECORY")
-    private String sCatecory;
+    @Column(name = "S_CATEGORY")
+    private String sCategory;
 
 }

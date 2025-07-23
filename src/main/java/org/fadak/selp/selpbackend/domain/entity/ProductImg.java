@@ -2,7 +2,10 @@ package org.fadak.selp.selpbackend.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -13,21 +16,11 @@ public class ProductImg extends BaseEntity {
     @Column(name = "PRODUCT_IMG_ID")
     private String id;
 
-    @Column(name = "PRODUCT_ID")
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PRODUCT_ID")
+    private Product product;
 
     @Column(name = "IMG_URL")
-    private String img_url;
-
-    @Column(name = "Field")
-    private String field;
-
-    @Column(name = "Field2")
-    private String field2;
-
-    @Column(name = "Field3")
-    private String field3;
-
-    @Column(name = "Field4")
-    private String field4;
+    private String imgUrl;
+    
 }
