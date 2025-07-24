@@ -13,11 +13,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "EVENT")
 public class Event extends BaseEntity {
 
@@ -30,12 +35,27 @@ public class Event extends BaseEntity {
     @JoinColumn(name = "RECEIVER_INFO_ID")
     private ReceiverInfo receiverInfo;
 
-    @Column(name = "EVENT_TYPE")
-    private String eventType;
+    @Column(name = "EVENT_TYPE")// TODO: TYPE 로 수정하기
+    private String eventType; // TODO: type 로 수정하기
 
-    @Column(name = "EVENT_DATE")
-    private LocalDateTime eventDate;
+    @Column(name = "EVENT_DATE") // TODO: DATE 로 수정하기
+    private LocalDate eventDate; // TODO: Date 로 수정하기
 
     @Column(name = "NOTIFICATION_DAYS_BEFORE")
     private Integer notificationDaysBefore;
+
+    @Builder
+    public Event(
+        ReceiverInfo receiverInfo,
+        String eventType,
+        LocalDate eventDate,
+        Integer notificationDaysBefore
+    ) {
+
+        this.receiverInfo = receiverInfo;
+        this.eventType = eventType;
+        this.eventDate = eventDate;
+        this.notificationDaysBefore = notificationDaysBefore;
+    }
+
 }
