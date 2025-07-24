@@ -24,4 +24,15 @@ public class GlobalExceptionHandler {
     }
 
     // 필요 시 다른 예외 핸들러 추가…
+    @ExceptionHandler(GptException.class)
+    public ResponseEntity<ErrorResponseDto> handleGptError(GptException ex) {
+        ErrorResponseDto body = new ErrorResponseDto("GPT_ERROR", ex.getMessage());
+        return ResponseEntity.status(500).body(body);
+    }
+
+    @ExceptionHandler(MessageException.class)
+    public ResponseEntity<ErrorResponseDto> handleMessageError(MessageException ex) {
+        ErrorResponseDto body = new ErrorResponseDto("MESSAGE_ERROR", ex.getMessage());
+        return ResponseEntity.status(500).body(body);
+    }
 }
