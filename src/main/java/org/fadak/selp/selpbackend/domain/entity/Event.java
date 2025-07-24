@@ -13,7 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.Getter;
 
 @Getter
@@ -34,7 +34,7 @@ public class Event extends BaseEntity {
     private String eventType;
 
     @Column(name = "EVENT_DATE")
-    private LocalDateTime eventDate;
+    private LocalDate eventDate;
 
     @Column(name = "NOTIFICATION_DAYS_BEFORE")
     private Integer notificationDaysBefore;
