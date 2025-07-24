@@ -14,8 +14,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import lombok.Getter;
 
-
+@Getter
 @Entity
 @Table(name = "EVENT")
 public class Event extends BaseEntity {
