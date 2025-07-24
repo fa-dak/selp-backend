@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
+@Setter // JSON 매핑
 @AllArgsConstructor
 public class ReceiverModifyRequestDto {
 
@@ -14,7 +14,7 @@ public class ReceiverModifyRequestDto {
     private String gender;
 
     private String relationship;
-    
+
     private int age;
 
     private String preferences;

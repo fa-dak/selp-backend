@@ -7,6 +7,7 @@ import org.fadak.selp.selpbackend.domain.dto.request.EventListSearchRequestDto;
 import org.fadak.selp.selpbackend.domain.entity.Event;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +20,7 @@ public class EventController {
 
     @GetMapping
     public ResponseEntity<List<Event>> getAllEventList(
-        EventListSearchRequestDto request
+        @ModelAttribute EventListSearchRequestDto request
     ) {
 
         long loginMemberId = 1L;

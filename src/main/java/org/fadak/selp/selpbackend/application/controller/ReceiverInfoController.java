@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,7 +50,8 @@ public class ReceiverInfoController {
 
     @PostMapping
     public ResponseEntity<?> registerReceiverInfo(
-        ReceiverRegisterRequestDto request) {
+        @RequestBody ReceiverRegisterRequestDto request
+    ) {
 
         long loginMemberId = 1L;
         receiverInfoService.registerReceiverInfo(request, loginMemberId);
@@ -58,7 +60,7 @@ public class ReceiverInfoController {
 
     @PutMapping("/{receiver-info-id}")
     public ResponseEntity<?> modifyReceiverInfo(
-        ReceiverModifyRequestDto request,
+        @RequestBody ReceiverModifyRequestDto request,
         @PathVariable("receiver-info-id") Long receiverInfoId
     ) {
 

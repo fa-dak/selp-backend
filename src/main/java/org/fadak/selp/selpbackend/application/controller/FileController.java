@@ -25,7 +25,9 @@ public class FileController {
     private final FileService fileService;
 
     @GetMapping("/{filename:.+}")
-    public ResponseEntity<String> download(@PathVariable String filename) {
+    public ResponseEntity<String> download(
+        @PathVariable String filename
+    ) {
 
         String presignedUrl = fileService.getUrl(FileDir.ROOT, filename);
         return ResponseEntity.ok(presignedUrl);
@@ -37,8 +39,12 @@ public class FileController {
      * @param file 업로드할 파일
      * @return JSON { "url": "...presigned URL..." }
      */
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file) {
+    @PostMapping(
+        value = "/upload",
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> upload(
+        @RequestParam("file") MultipartFile file
+    ) {
 
         UploadResultDto uploadResultDto = fileService.upload(
             FileDir.ROOT,
