@@ -16,11 +16,13 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "EVENT")
 public class Event extends BaseEntity {
 
