@@ -1,3 +1,7 @@
+/**
+ * @담당자: 정재영
+ */
+
 package org.fadak.selp.selpbackend.domain.entity;
 
 import jakarta.persistence.Column;
@@ -10,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "EVENT")

@@ -1,3 +1,7 @@
+/**
+ * @담당자: 원승현
+ */
+
 package org.fadak.selp.selpbackend.domain.entity;
 
 import jakarta.persistence.Column;
@@ -22,5 +26,5 @@ public class ProductImg extends BaseEntity {
 
     @Column(name = "IMG_URL")
     private String imgUrl;
-    
+
 }

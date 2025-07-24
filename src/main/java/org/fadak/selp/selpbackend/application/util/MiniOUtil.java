@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MiniOUtil implements FileUtil {
+public class MiniOUtil {
 
     private final MinioClient minioClient;
     private final String bucketName;
@@ -33,7 +33,6 @@ public class MiniOUtil implements FileUtil {
     /**
      * 지정한 객체에 대해 GET Presigned URL 을 생성합니다.
      */
-    @Override
     public String getPresignedUrl(FileDir fileDir, String objectName) {
 
         try {
@@ -58,7 +57,6 @@ public class MiniOUtil implements FileUtil {
      * @param size        데이터 길이(byte)
      * @param contentType MIME 타입 (예: "image/png", "text/plain")
      */
-    @Override
     public void upload(
         FileDir fileDir,
         String objectName,
@@ -83,49 +81,48 @@ public class MiniOUtil implements FileUtil {
 
     /**
      * 객체를 삭제합니다.
-     *
-     * @param objectName 버킷 내 객체 키
      */
-    @Override
-    public void delete(FileDir fileDir, String objectName) {
+    public void delete(String filePath) {
 
         try {
             minioClient.removeObject(
                 RemoveObjectArgs.builder()
-                    .bucket(fileDir.getValue() + bucketName)
-                    .object(objectName)
+                    .bucket(bucketName)
+                    .object(filePath)
                     .build()
             );
         } catch (Exception e) {
-            throw new FileStorageException("Failed to delete object " + objectName, e);
+            throw new FileStorageException("Failed to delete object " + filePath, e);
         }
     }
 
     /**
      * 기존 객체를 새 데이터로 덮어쓰고, 새로운 Presigned URL을 반환합니다.
      *
-     * @param objectName  버킷 내 객체 키
-     * @param content     덮어쓸 데이터의 InputStream
-     * @param size        데이터 길이(byte)
-     * @param contentType MIME 타입
+     * @param newObjectName 버킷 내 객체 키
+     * @param content       덮어쓸 데이터의 InputStream
+     * @param size          데이터 길이(byte)
+     * @param contentType   MIME 타입
      * @return 새 Presigned URL
      */
-    @Override
     public String modify(
-        FileDir fileDir,
-        String objectName,
+        String oldFilePath, // 지우기 위해 필요
+
+        FileDir newFileDir,
+        String newObjectName,
         InputStream content,
         long size,
         String contentType
     ) {
 
         try {
-            upload(fileDir, objectName, content, size, contentType);
-            return getPresignedUrl(fileDir, objectName);
+            delete(oldFilePath);
+            upload(newFileDir, newObjectName, content, size, contentType);
+            return getPresignedUrl(newFileDir, newObjectName);
         } catch (FileStorageException e) {
             throw e;
         } catch (Exception e) {
-            throw new FileStorageException("Failed to modify object " + objectName, e);
+            throw new FileStorageException("Failed to modify object " + newObjectName, e);
         }
     }
 }

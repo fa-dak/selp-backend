@@ -1,3 +1,7 @@
+/**
+ * @담당자: 한상준
+ */
+
 package org.fadak.selp.selpbackend.domain.entity;
 
 import jakarta.persistence.Column;

@@ -1,8 +1,10 @@
 package org.fadak.selp.selpbackend.application.service;
 
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.fadak.selp.selpbackend.application.util.FileUtil;
+import org.fadak.selp.selpbackend.application.util.MiniOUtil;
 import org.fadak.selp.selpbackend.domain.constant.FileDir;
+import org.fadak.selp.selpbackend.domain.dto.business.UploadResultDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,54 +12,61 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
 
-    private final FileUtil fileUtil;
+    private final MiniOUtil fileUtil;
 
-    /**
-     * 파일을 업로드하고 Presigned GET URL을 반환합니다.
-     *
-     * @param file       업로드할 파일
-     * @param objectName 버킷 내 저장될 객체 키 (ex: "prod/test.txt")
-     * @return Presigned URL
-     */
     @Override
-    public String uploadFile(MultipartFile file, FileDir fileDir, String objectName)
+    public UploadResultDto upload(FileDir fileDir, MultipartFile file)
         throws IllegalArgumentException {
 
+        String uuid = UUID.randomUUID().toString();
+        String fileName = file.getOriginalFilename();
+        String generatedName = uuid + "_" + fileName;
+
         try (var is = file.getInputStream()) {
-            fileUtil.upload(fileDir, objectName, is, file.getSize(), file.getContentType());
-            return fileUtil.getPresignedUrl(fileDir, objectName);
+            fileUtil.upload(fileDir, generatedName, is, file.getSize(), file.getContentType());
+
+            return UploadResultDto.builder()
+                .presignedUrl(fileUtil.getPresignedUrl(fileDir, generatedName))
+                .filePath(fileDir.getValue() + generatedName)
+                .build();
         } catch (Exception exception) {
             throw new IllegalArgumentException(exception);
         }
     }
 
-    /**
-     * 업로드된 객체의 Presigned GET URL을 반환합니다.
-     */
     @Override
-    public String getFileUrl(FileDir fileDir, String objectName) {
+    public String getUrl(FileDir fileDir, String objectName) {
 
         return fileUtil.getPresignedUrl(fileDir, objectName);
     }
 
-    /**
-     * 객체를 삭제합니다.
-     */
     @Override
-    public void deleteFile(FileDir fileDir, String objectName) {
+    public void delete(String filePath) {
 
-        fileUtil.delete(fileDir, objectName);
+        fileUtil.delete(filePath);
     }
 
-    /**
-     * 기존 객체를 새 파일로 덮어쓰고, 새로운 Presigned URL을 반환합니다.
-     */
     @Override
-    public String modifyFile(FileDir fileDir, String objectName, MultipartFile file) {
+    public UploadResultDto modify(String oldFilePath, FileDir newFileDir,
+        MultipartFile newFile) {
 
-        try (var is = file.getInputStream()) {
-            return fileUtil.modify(fileDir, objectName, is, file.getSize(),
-                file.getContentType());
+        String uuid = UUID.randomUUID().toString();
+        String fileName = newFile.getOriginalFilename();
+        String generatedName = uuid + "_" + fileName;
+
+        try (var is = newFile.getInputStream()) {
+            String presignedUrl = fileUtil.modify(
+                oldFilePath,
+                newFileDir,
+                generatedName,
+                is,
+                newFile.getSize(),
+                newFile.getContentType());
+
+            return UploadResultDto.builder()
+                .presignedUrl(presignedUrl)
+                .filePath(newFileDir.getValue() + generatedName)
+                .build();
         } catch (Exception exception) {
             throw new IllegalArgumentException(exception);
         }
