@@ -16,8 +16,10 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "EVENT")
 public class Event extends BaseEntity {
@@ -53,4 +55,5 @@ public class Event extends BaseEntity {
         this.eventDate = eventDate;
         this.notificationDaysBefore = notificationDaysBefore;
     }
+
 }

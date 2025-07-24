@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.fadak.selp.selpbackend.domain.dto.request.EventListSearchRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.request.EventModifyRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.EventRegisterRequestDto;
 import org.fadak.selp.selpbackend.domain.entity.Event;
 import org.fadak.selp.selpbackend.domain.repository.EventRepository;
@@ -49,6 +50,20 @@ public class EventServiceImpl implements EventService {
             .eventDate(eventDate)
             .notificationDaysBefore(request.getNotificationDayBefore())
             .build();
+        repository.save(event);
+    }
+
+    @Override
+    public void modifyEvent(EventModifyRequestDto request, long eventId, long loginMemberId) {
+
+        Event event = repository.findByIdAndReceiverInfo_Member_Id(eventId, loginMemberId)
+            .orElseThrow(IllegalStateException::new);
+
+        event.setReceiverInfo(receiverInfoService.getReceiverInfo(request.getReceiverId()));
+        event.setEventType(request.getEventType());
+        event.setEventDate(LocalDate.parse(request.getEventDate()));
+        event.setNotificationDaysBefore(request.getNotificationDayBefore());
+
         repository.save(event);
     }
 }

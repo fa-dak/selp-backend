@@ -2,6 +2,7 @@ package org.fadak.selp.selpbackend.domain.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.fadak.selp.selpbackend.domain.entity.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,4 +16,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         long memberId);
 
     void deleteByIdAndReceiverInfo_Member_Id(Long id, Long receiverInfoMemberId);
+
+    Optional<Event> findByIdAndReceiverInfo_Member_Id(Long id, Long receiverInfoMemberId);
 }
