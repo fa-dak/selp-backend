@@ -4,6 +4,7 @@ import java.util.List;
 import org.fadak.selp.selpbackend.domain.dto.request.ReceiverModifyRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.ReceiverRegisterRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.response.ReceiverInfoListResponseDto;
+import org.fadak.selp.selpbackend.domain.entity.ReceiverInfo;
 
 public interface ReceiverInfoService {
 
@@ -15,4 +16,6 @@ public interface ReceiverInfoService {
 
     void modifyReceiverInfo(ReceiverModifyRequestDto request, Long receiverInfoId,
         long loginMemberId);
+
+    ReceiverInfo getReceiverInfo(long receiverId);
 }

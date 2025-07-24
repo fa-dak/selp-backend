@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.fadak.selp.selpbackend.domain.dto.request.EventListSearchRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.request.EventRegisterRequestDto;
 import org.fadak.selp.selpbackend.domain.entity.Event;
 import org.fadak.selp.selpbackend.domain.repository.EventRepository;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class EventServiceImpl implements EventService {
 
     private final EventRepository repository;
+    private final ReceiverInfoService receiverInfoService;
 
     @Override
     public List<Event> getEventList(EventListSearchRequestDto request, long loginMemberId) {
@@ -34,5 +36,19 @@ public class EventServiceImpl implements EventService {
     public void delete(long eventId, long loginMemberId) {
 
         repository.deleteByIdAndReceiverInfo_Member_Id(eventId, loginMemberId);
+    }
+
+    @Override
+    public void registerEvent(EventRegisterRequestDto request, long loginMemberId) {
+
+        LocalDate eventDate = LocalDate.parse(request.getEventDate());
+
+        Event event = Event.builder()
+            .receiverInfo(receiverInfoService.getReceiverInfo(request.getReceiverId()))
+            .eventType(request.getEventType())
+            .eventDate(eventDate)
+            .notificationDaysBefore(request.getNotificationDayBefore())
+            .build();
+        repository.save(event);
     }
 }

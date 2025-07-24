@@ -74,4 +74,11 @@ public class ReceiverInfoServiceImpl implements ReceiverInfoService {
         receiverInfo.update(request);
         repository.save(receiverInfo);
     }
+
+    @Override
+    public ReceiverInfo getReceiverInfo(long receiverId) {
+
+        return repository.findById(receiverId)
+            .orElseThrow(IllegalArgumentException::new);
+    }
 }
