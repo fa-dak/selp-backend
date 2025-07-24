@@ -3,6 +3,8 @@ package org.fadak.selp.selpbackend.application.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.fadak.selp.selpbackend.domain.dto.request.ReceiverModifyRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.request.ReceiverRegisterRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.response.ReceiverInfoListResponseDto;
 import org.fadak.selp.selpbackend.domain.entity.ReceiverInfo;
 import org.fadak.selp.selpbackend.domain.repository.ReceiverInfoRepository;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class ReceiverInfoServiceImpl implements ReceiverInfoService {
 
     private final ReceiverInfoRepository repository;
+    private final MemberService memberService;
 
     @Override
     public List<ReceiverInfoListResponseDto> getReceiverInfoList(long memberId) {
@@ -24,12 +27,12 @@ public class ReceiverInfoServiceImpl implements ReceiverInfoService {
             .map(receiverInfo ->
                 ReceiverInfoListResponseDto.builder()
                     .receiverInfoId(receiverInfo.getId())
-                    .receiverDetail(receiverInfo.getDetail())
-                    .receiverGender(receiverInfo.getGender())
                     .receiverNickname(receiverInfo.getNickname())
-                    .receiverPreferences(receiverInfo.getPreferences())
                     .receiverAge(receiverInfo.getAge())
+                    .receiverGender(receiverInfo.getGender())
                     .relationship(receiverInfo.getRelationship())
+                    .receiverPreferences(receiverInfo.getPreferences())
+                    .receiverDetail(receiverInfo.getDetail())
                     .build()
             ).toList();
     }
@@ -38,5 +41,37 @@ public class ReceiverInfoServiceImpl implements ReceiverInfoService {
     public void delete(long receiverInfoId, long loginMemberId) {
 
         repository.deleteByIdAndMember_Id(receiverInfoId, loginMemberId);
+    }
+
+    @Override
+    public void registerReceiverInfo(
+        ReceiverRegisterRequestDto request,
+        long loginMemberId
+    ) {
+
+        ReceiverInfo receiverInfo = ReceiverInfo.builder()
+            .member(memberService.getMember(loginMemberId))
+            .nickname(request.getNickname())
+            .age(request.getAge())
+            .gender(request.getGender())
+            .relationship(request.getRelationship())
+            .preferences(request.getPreferences())
+            .detail(request.getDetail())
+            .build();
+
+        repository.save(receiverInfo);
+    }
+
+    @Override
+    public void modifyReceiverInfo(
+        ReceiverModifyRequestDto request,
+        Long receiverInfoId,
+        long loginMemberId
+    ) {
+
+        ReceiverInfo receiverInfo = repository.findByIdAndMember_Id(receiverInfoId, loginMemberId)
+            .orElseThrow(IllegalArgumentException::new);
+        receiverInfo.update(request);
+        repository.save(receiverInfo);
     }
 }

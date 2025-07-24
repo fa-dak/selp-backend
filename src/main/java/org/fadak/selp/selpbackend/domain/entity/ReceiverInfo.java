@@ -13,11 +13,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.fadak.selp.selpbackend.domain.dto.request.ReceiverModifyRequestDto;
 
 @Getter
 @Entity
 @Table(name = "RECEIVER_INFO")
+@NoArgsConstructor
 public class ReceiverInfo extends BaseEntity {
 
     @Id
@@ -53,4 +57,26 @@ public class ReceiverInfo extends BaseEntity {
     @Column(name = "DETAIL") // 세부 사항
     private String detail;
 
+    @Builder
+    public ReceiverInfo(Member member, String nickname, Integer age, String gender,
+        String relationship, String preferences, String detail) {
+
+        this.member = member;
+        this.nickname = nickname;
+        this.age = age;
+        this.gender = gender != null ? gender : "NONE";
+        this.relationship = relationship;
+        this.preferences = preferences;
+        this.detail = detail;
+    }
+
+    public void update(ReceiverModifyRequestDto request) {
+
+        this.nickname = request.getNickname();
+        this.age = request.getAge();
+        this.gender = request.getGender();
+        this.relationship = request.getRelationship();
+        this.preferences = request.getPreferences();
+        this.detail = request.getDetail();
+    }
 }

@@ -1,16 +1,21 @@
 package org.fadak.selp.selpbackend.domain.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
-    @Column(name = "CREATED_DATE")
+    @CreatedDate
+    @Column(name = "CREATED_DATE", updatable = false)
     private LocalDateTime createdDate;
 
-    @Column(name = "CREATED_BY")
+    @Column(name = "CREATED_BY", updatable = false)
     private Long createdBy;
 
     @Column(name = "EDIT_DATE")
@@ -18,4 +23,6 @@ public abstract class BaseEntity {
 
     @Column(name = "EDIT_BY")
     private Long editBy;
+
+
 }
