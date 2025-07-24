@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter // JSON 매핑
 @AllArgsConstructor
 public class EventModifyRequestDto {
-    
+
     private String eventDate; // 형식: YYYY-MM-DD
 
     private String eventName;
@@ -17,5 +17,5 @@ public class EventModifyRequestDto {
 
     private long receiverId;
 
-    private Integer notificationDayBefore; // null 가능
+    private Integer notificationDaysBefore; // null 가능
 }

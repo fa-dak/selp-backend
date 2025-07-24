@@ -4,6 +4,7 @@
 
 package org.fadak.selp.selpbackend.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,6 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.fadak.selp.selpbackend.domain.dto.request.ReceiverModifyRequestDto;
 
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Getter
 @Entity
 @Table(name = "RECEIVER_INFO")

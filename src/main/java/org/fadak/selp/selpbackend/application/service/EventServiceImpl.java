@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.fadak.selp.selpbackend.domain.dto.request.EventListSearchRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.EventModifyRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.EventRegisterRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.response.EventListResponseDto;
 import org.fadak.selp.selpbackend.domain.entity.Event;
 import org.fadak.selp.selpbackend.domain.repository.EventRepository;
 import org.springframework.stereotype.Service;
@@ -21,16 +22,29 @@ public class EventServiceImpl implements EventService {
     private final ReceiverInfoService receiverInfoService;
 
     @Override
-    public List<Event> getEventList(EventListSearchRequestDto request, long loginMemberId) {
+    public List<EventListResponseDto> getEventList(EventListSearchRequestDto request,
+        long loginMemberId) {
 
         YearMonth yearMonth = YearMonth.of(request.getYear(), request.getMonth());
         LocalDate startDate = yearMonth.atDay(1); // 2025-07-01
         LocalDate endDate = yearMonth.atEndOfMonth(); // 2025-07-31
 
-        return repository.findByEventDateBetweenAndReceiverInfo_Member_Id(
+        List<Event> eventList = repository.findByEventDateBetweenAndReceiverInfo_Member_Id(
             startDate,
             endDate,
             loginMemberId);
+
+        List<EventListResponseDto> responseList = eventList.stream()
+            .map(event -> EventListResponseDto.builder()
+                .eventId(event.getId())
+                .eventName(event.getEventName())
+                .eventType(event.getEventType())
+                .receiverNickname(event.getReceiverInfo().getNickname())
+                .notificationDaysBefore(event.getNotificationDaysBefore())
+                .build())
+            .toList();
+
+        return responseList;
     }
 
     @Override
@@ -47,8 +61,9 @@ public class EventServiceImpl implements EventService {
         Event event = Event.builder()
             .receiverInfo(receiverInfoService.getReceiverInfo(request.getReceiverId()))
             .eventType(request.getEventType())
+            .eventName(request.getEventName())
             .eventDate(eventDate)
-            .notificationDaysBefore(request.getNotificationDayBefore())
+            .notificationDaysBefore(request.getNotificationDaysBefore())
             .build();
         repository.save(event);
     }
@@ -61,8 +76,9 @@ public class EventServiceImpl implements EventService {
 
         event.setReceiverInfo(receiverInfoService.getReceiverInfo(request.getReceiverId()));
         event.setEventType(request.getEventType());
+        event.setEventName(request.getEventName());
         event.setEventDate(LocalDate.parse(request.getEventDate()));
-        event.setNotificationDaysBefore(request.getNotificationDayBefore());
+        event.setNotificationDaysBefore(request.getNotificationDaysBefore());
 
         repository.save(event);
     }

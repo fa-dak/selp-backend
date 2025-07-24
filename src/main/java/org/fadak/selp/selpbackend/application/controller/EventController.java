@@ -2,11 +2,12 @@ package org.fadak.selp.selpbackend.application.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.fadak.selp.selpbackend.application.service.EventService;
 import org.fadak.selp.selpbackend.domain.dto.request.EventListSearchRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.EventModifyRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.EventRegisterRequestDto;
-import org.fadak.selp.selpbackend.domain.entity.Event;
+import org.fadak.selp.selpbackend.domain.dto.response.EventListResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/events")
 @RequiredArgsConstructor
@@ -26,12 +28,13 @@ public class EventController {
     private final EventService eventService;
 
     @GetMapping
-    public ResponseEntity<List<Event>> getAllEventList(
+    public ResponseEntity<List<EventListResponseDto>> getAllEventList(
         @ModelAttribute EventListSearchRequestDto request
     ) {
 
+        log.info("request: {}-{}", request.getYear(), request.getMonth());
         long loginMemberId = 1L;
-        List<Event> eventList = eventService.getEventList(request, loginMemberId);
+        List<EventListResponseDto> eventList = eventService.getEventList(request, loginMemberId);
         return ResponseEntity.ok(eventList);
     }
 

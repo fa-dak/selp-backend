@@ -17,5 +17,5 @@ public class EventRegisterRequestDto {
 
     private long receiverId;
 
-    private Integer notificationDayBefore; // null 가능
+    private Integer notificationDaysBefore; // null 가능
 }
