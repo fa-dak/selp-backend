@@ -4,6 +4,7 @@
 
 package org.fadak.selp.selpbackend.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,6 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.fadak.selp.selpbackend.domain.dto.request.ReceiverModifyRequestDto;
 
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Getter
 @Entity
 @Table(name = "RECEIVER_INFO")
@@ -71,12 +73,18 @@ public class ReceiverInfo extends BaseEntity {
     }
 
     public void update(ReceiverModifyRequestDto request) {
-
-        this.nickname = request.getNickname();
+        // TODO: 유효성 검사는 컨트롤러단 @Valid로 하기
+        this.nickname = request.getNickname() != null && !request.getNickname().isEmpty()
+            ? request.getNickname() : this.nickname;
         this.age = request.getAge();
-        this.gender = request.getGender();
-        this.relationship = request.getRelationship();
-        this.preferences = request.getPreferences();
-        this.detail = request.getDetail();
+        this.gender = request.getGender() != null && !request.getGender().isEmpty()
+            ? request.getGender() : this.gender;
+        this.relationship =
+            request.getRelationship() != null && !request.getRelationship().isEmpty()
+                ? request.getRelationship() : this.relationship;
+        this.preferences = request.getPreferences() != null && !request.getPreferences().isEmpty()
+            ? request.getPreferences() : this.preferences;
+        this.detail = request.getDetail() != null && !request.getDetail().isEmpty()
+            ? request.getDetail() : this.detail;
     }
 }

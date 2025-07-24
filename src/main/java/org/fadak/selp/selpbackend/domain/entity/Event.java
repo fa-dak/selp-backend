@@ -38,6 +38,9 @@ public class Event extends BaseEntity {
     @Column(name = "EVENT_TYPE")// TODO: TYPE 로 수정하기
     private String eventType; // TODO: type 로 수정하기
 
+    @Column(name = "EVENT_NAME")// TODO: NAME 로 수정하기
+    private String eventName; // TODO: name 로 수정하기
+
     @Column(name = "EVENT_DATE") // TODO: DATE 로 수정하기
     private LocalDate eventDate; // TODO: Date 로 수정하기
 
@@ -48,12 +51,14 @@ public class Event extends BaseEntity {
     public Event(
         ReceiverInfo receiverInfo,
         String eventType,
+        String eventName,
         LocalDate eventDate,
         Integer notificationDaysBefore
     ) {
 
         this.receiverInfo = receiverInfo;
         this.eventType = eventType;
+        this.eventName = eventName;
         this.eventDate = eventDate;
         this.notificationDaysBefore = notificationDaysBefore;
     }

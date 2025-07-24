@@ -9,6 +9,7 @@ import org.fadak.selp.selpbackend.domain.dto.response.ReceiverInfoListResponseDt
 import org.fadak.selp.selpbackend.domain.entity.ReceiverInfo;
 import org.fadak.selp.selpbackend.domain.repository.ReceiverInfoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -38,12 +39,14 @@ public class ReceiverInfoServiceImpl implements ReceiverInfoService {
     }
 
     @Override
+    @Transactional
     public void delete(long receiverInfoId, long loginMemberId) {
 
         repository.deleteByIdAndMember_Id(receiverInfoId, loginMemberId);
     }
 
     @Override
+    @Transactional
     public void registerReceiverInfo(
         ReceiverRegisterRequestDto request,
         long loginMemberId
@@ -63,6 +66,7 @@ public class ReceiverInfoServiceImpl implements ReceiverInfoService {
     }
 
     @Override
+    @Transactional
     public void modifyReceiverInfo(
         ReceiverModifyRequestDto request,
         Long receiverInfoId,
