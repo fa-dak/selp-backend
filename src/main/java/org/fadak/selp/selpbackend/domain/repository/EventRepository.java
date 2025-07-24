@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    // date: YYYY-MM-DD 이고 eventDate는 LocalDate
-    List<Event> findByEventDateAndReceiverInfo_Member_Id(LocalDate date, long loginMemberId);
+    List<Event> findByEventDateBetweenAndReceiverInfo_Member_Id(
+        LocalDate startDate,
+        LocalDate endDate,
+        long memberId);
 }

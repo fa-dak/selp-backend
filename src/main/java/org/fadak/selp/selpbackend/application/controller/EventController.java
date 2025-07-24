@@ -3,7 +3,7 @@ package org.fadak.selp.selpbackend.application.controller;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.fadak.selp.selpbackend.application.service.EventService;
-import org.fadak.selp.selpbackend.domain.dto.request.EventListRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.request.EventListSearchRequestDto;
 import org.fadak.selp.selpbackend.domain.entity.Event;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +19,7 @@ public class EventController {
 
     @GetMapping
     public ResponseEntity<List<Event>> getAllEventList(
-        EventListRequestDto request
+        EventListSearchRequestDto request
     ) {
 
         long loginMemberId = 1L;
