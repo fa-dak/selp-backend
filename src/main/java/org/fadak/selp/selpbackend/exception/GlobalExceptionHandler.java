@@ -15,5 +15,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(500).body(body);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponseDto> handleIllegalArgumentError(
+        IllegalArgumentException ex) {
+
+        ErrorResponseDto body = new ErrorResponseDto("INTERNAL_ERROR", ex.getMessage());
+        return ResponseEntity.status(500).body(body);
+    }
+
     // 필요 시 다른 예외 핸들러 추가…
 }

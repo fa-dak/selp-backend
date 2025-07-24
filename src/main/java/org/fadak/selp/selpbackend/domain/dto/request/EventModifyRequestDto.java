@@ -15,7 +15,7 @@ public class EventModifyRequestDto {
 
     private String eventType;
 
-    private long receiverId;
+    private long receiverInfoId;
 
     private Integer notificationDaysBefore; // null 가능
 }

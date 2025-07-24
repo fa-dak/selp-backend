@@ -59,7 +59,7 @@ public class EventServiceImpl implements EventService {
         LocalDate eventDate = LocalDate.parse(request.getEventDate());
 
         Event event = Event.builder()
-            .receiverInfo(receiverInfoService.getReceiverInfo(request.getReceiverId()))
+            .receiverInfo(receiverInfoService.getReceiverInfo(request.getReceiverInfoId()))
             .eventType(request.getEventType())
             .eventName(request.getEventName())
             .eventDate(eventDate)
@@ -74,7 +74,7 @@ public class EventServiceImpl implements EventService {
         Event event = repository.findByIdAndReceiverInfo_Member_Id(eventId, loginMemberId)
             .orElseThrow(IllegalStateException::new);
 
-        event.setReceiverInfo(receiverInfoService.getReceiverInfo(request.getReceiverId()));
+        event.setReceiverInfo(receiverInfoService.getReceiverInfo(request.getReceiverInfoId()));
         event.setEventType(request.getEventType());
         event.setEventName(request.getEventName());
         event.setEventDate(LocalDate.parse(request.getEventDate()));
