@@ -12,6 +12,7 @@ import org.fadak.selp.selpbackend.domain.dto.response.EventListResponseDto;
 import org.fadak.selp.selpbackend.domain.entity.Event;
 import org.fadak.selp.selpbackend.domain.repository.EventRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -48,12 +49,14 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public void delete(long eventId, long loginMemberId) {
-
+        
         repository.deleteByIdAndReceiverInfo_Member_Id(eventId, loginMemberId);
     }
 
     @Override
+    @Transactional
     public void registerEvent(EventRegisterRequestDto request, long loginMemberId) {
 
         LocalDate eventDate = LocalDate.parse(request.getEventDate());
@@ -69,6 +72,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public void modifyEvent(EventModifyRequestDto request, long eventId, long loginMemberId) {
 
         Event event = repository.findByIdAndReceiverInfo_Member_Id(eventId, loginMemberId)

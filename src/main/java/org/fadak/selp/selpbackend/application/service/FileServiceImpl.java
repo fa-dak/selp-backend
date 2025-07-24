@@ -6,6 +6,7 @@ import org.fadak.selp.selpbackend.application.util.MiniOUtil;
 import org.fadak.selp.selpbackend.domain.constant.FileDir;
 import org.fadak.selp.selpbackend.domain.dto.business.UploadResultDto;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -15,6 +16,7 @@ public class FileServiceImpl implements FileService {
     private final MiniOUtil fileUtil;
 
     @Override
+    @Transactional
     public UploadResultDto upload(FileDir fileDir, MultipartFile file)
         throws IllegalArgumentException {
 
@@ -41,12 +43,14 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    @Transactional
     public void delete(String filePath) {
 
         fileUtil.delete(filePath);
     }
 
     @Override
+    @Transactional
     public UploadResultDto modify(String oldFilePath, FileDir newFileDir,
         MultipartFile newFile) {
 
