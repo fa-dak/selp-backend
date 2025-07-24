@@ -29,4 +29,10 @@ public class EventServiceImpl implements EventService {
             endDate,
             loginMemberId);
     }
+
+    @Override
+    public void delete(long eventId, long loginMemberId) {
+
+        repository.deleteByIdAndReceiverInfo_Member_Id(eventId, loginMemberId);
+    }
 }

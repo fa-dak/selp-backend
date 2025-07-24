@@ -13,4 +13,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         LocalDate startDate,
         LocalDate endDate,
         long memberId);
+
+    void deleteByIdAndReceiverInfo_Member_Id(Long id, Long receiverInfoMemberId);
 }
