@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 public class MessageServiceImpl implements MessageService {
 
     private final ReceiverInfoRepository receiverRepo;
-    private final ProductRepository productRepo;
     private final EventRepository eventRepo;
     private final GptUtil gptUtil;
 
@@ -38,17 +37,11 @@ public class MessageServiceImpl implements MessageService {
         Event event = eventRepo.findById(request.getEventId())
                 .orElseThrow(() -> new MessageException("기념일 없음"));
 
-        List<Product> products = productRepo.findAllById(request.getProductIdList());
-        String giftCategories = products.stream()
-                .map(Product::getCategory)
-                .collect(Collectors.joining(", "));
-
         MessageContext context = MessageContext.builder()
                 .style(request.getStyle())
                 .gender(receiver.getGender())
                 .age(receiver.getAge())
                 .relationship(receiver.getRelationship())
-                .giftCategory(giftCategories)
                 .occasion(event.getEventType())
                 .additionalNote(request.getAdditionalNote())
                 .build();
