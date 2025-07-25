@@ -7,6 +7,10 @@ minio:
   presign:
     expiration-seconds: ${PROD_PRESIGNED_URL_SECONDS}   # 6시간 = 6*3600
 
+springdoc:
+  swagger-ui:
+    url: https://selp-backend.jaeyoung2.duckdns.org
+
 spring:
   datasource:
     url: jdbc:mysql://selp-mysql-db:3306/selp-prod?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
