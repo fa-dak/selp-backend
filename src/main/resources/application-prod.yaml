@@ -1,3 +1,6 @@
+server:
+  forward-headers-strategy: framework
+
 minio:
   url: https://selp-minio.jaeyoung2.duckdns.org
   access-key: ${MINIO_ACCESS_KEY}
