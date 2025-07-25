@@ -10,7 +10,7 @@ public class MessageContext {
     private String gender;
     private int age;
     private String relationship;
-    private String giftName;
+    private String giftCategory;
     private String occasion;
     private String additionalNote;
 }

@@ -24,16 +24,21 @@ public class GptUtil {
 
     public String buildMessagePrompt(MessageContext context) {
         return String.format(
-                "Write 3 short, two-line messages in a %s style for a %s in their %d's (%s), " +
-                        "as a gift message for giving %s on the occasion of %s. " +
-                        "Output in the following format:\n1. message1\n2. message2\n3. message3",
+                "Write 3 short and warm two-line gift messages in a %s style for a %d-year-old %s (%s). " +
+                        "The messages are for giving a gift (%s) on the occasion of %s. " +
+                        "%s\n\n" +
+                        "Output only the messages in this format:\n" +
+                        "1. message1\n2. message2\n3. message3",
                 context.getStyle(),
-                context.getGender(),
                 context.getAge(),
+                context.getGender().equalsIgnoreCase("M") ? "man" : "woman",
                 context.getRelationship(),
-                context.getGiftName(),
-                context.getOccasion()
-        ) + (context.getAdditionalNote() != null ? " Additional note: " + context.getAdditionalNote() : "");
+                context.getGiftCategory(),
+                context.getOccasion(),
+                context.getAdditionalNote() != null ?
+                        "Consider this additional context: " + context.getAdditionalNote() :
+                        ""
+        );
     }
 
     public String callGpt(String prompt) {
@@ -50,7 +55,7 @@ public class GptUtil {
             // 2. HTTP 요청 구성
             HttpClient httpClient = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(""))
+                    .uri(URI.create("https://api.openai.com/v1/chat/completions"))
                     .header("Authorization", "Bearer " + apiKey)
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(requestBody)))
@@ -69,7 +74,7 @@ public class GptUtil {
                     .asText();
 
         } catch (Exception e) {
-            throw new GptException("GPT 호출 실패");
+            throw new GptException("GPT 호출 실패 "+e.getMessage());
         }
     }
 }
