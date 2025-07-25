@@ -2,6 +2,7 @@ package org.fadak.selp.selpbackend.application.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.fadak.selp.selpbackend.application.infrastructure.KakaoClient;
 import org.fadak.selp.selpbackend.application.security.JwtTokenProvider;
 import org.fadak.selp.selpbackend.domain.dto.request.KakaoLoginRequestDto;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OAuthServiceImpl implements OAuthService {
 
     private final MemberRepository memberRepository;
@@ -38,6 +40,7 @@ public class OAuthServiceImpl implements OAuthService {
         // 리프레시 토큰은 사용되진 않음
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
 
+        log.info("발급된 Access Token: {}", accessToken);
         return LoginResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
