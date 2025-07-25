@@ -7,12 +7,11 @@ import org.fadak.selp.selpbackend.domain.dto.message.MessageContext;
 import org.fadak.selp.selpbackend.domain.dto.message.MessageRequest;
 import org.fadak.selp.selpbackend.domain.dto.message.MessageResponse;
 import org.fadak.selp.selpbackend.domain.entity.Event;
-import org.fadak.selp.selpbackend.domain.entity.Product;
 import org.fadak.selp.selpbackend.domain.entity.ReceiverInfo;
 import org.fadak.selp.selpbackend.domain.repository.EventRepository;
-import org.fadak.selp.selpbackend.domain.repository.ProductRepository;
 import org.fadak.selp.selpbackend.domain.repository.ReceiverInfoRepository;
 import org.fadak.selp.selpbackend.exception.MessageException;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -27,13 +26,11 @@ public class MessageServiceImpl implements MessageService {
 
     private final ReceiverInfoRepository receiverRepo;
     private final EventRepository eventRepo;
-    private final GptUtil gptUtil;
+    private final ChatModel chatModel;
 
     public MessageResponse recommendMessage(MessageRequest request) {
-
         ReceiverInfo receiver = receiverRepo.findById(request.getReceiverInfoId())
                 .orElseThrow(() -> new MessageException("받는 사람 없음"));
-
         Event event = eventRepo.findById(request.getEventId())
                 .orElseThrow(() -> new MessageException("기념일 없음"));
 
@@ -46,11 +43,15 @@ public class MessageServiceImpl implements MessageService {
                 .additionalNote(request.getAdditionalNote())
                 .build();
 
-        String prompt = gptUtil.buildMessagePrompt(context);
-        log.info("prompt:: " + prompt);
-        String rawResponse = gptUtil.callGpt(prompt);
+        String promptText = GptUtil.buildMessagePrompt(context);
+        log.info("prompt:: " + promptText);
 
-        List<String> messages = Arrays.stream(rawResponse.split("\n"))
+        // 5. 호출
+        String generation = GptUtil.callGpt(chatModel, promptText);
+        log.info("response:: {}", generation);
+
+
+        List<String> messages = Arrays.stream(generation.split("\n"))
                 .map(line -> line.replaceAll("^\\d+\\.\\s*", ""))
                 .filter(StringUtils::hasText)
                 .collect(Collectors.toList());
