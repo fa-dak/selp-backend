@@ -9,7 +9,7 @@ minio:
 
 springdoc:
   swagger-ui:
-    url: https://selp-backend.jaeyoung2.duckdns.org
+    url: https://selp-backend.jaeyoung2.duckdns.org/v3/api-docs
 
 spring:
   datasource:
