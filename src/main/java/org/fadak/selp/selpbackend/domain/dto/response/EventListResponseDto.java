@@ -9,11 +9,12 @@ public class EventListResponseDto {
 
     private long eventId;
 
-
     private String eventName;
 
     private String eventType;
-    
+
+    private String eventDate;
+
     private String receiverNickname;
 
     private Integer notificationDaysBefore;
