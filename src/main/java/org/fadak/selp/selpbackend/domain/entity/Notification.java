@@ -15,9 +15,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 
+import java.time.LocalDate;
 @Getter
 @Entity
 @Table(name = "NOTIFICATION")
+
 public class Notification extends BaseEntity {
 
     @Id
@@ -32,15 +34,16 @@ public class Notification extends BaseEntity {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @Column(name = "EVENT_TYPE")
-    private String eventType;
-
     @Column(name = "TITLE")
     private String title;
 
     @Column(name = "CONTENT")
     private String content;
 
-    @Column(name = "IS_READ")
-    private Boolean isRead = false;
+    @Column(name = "IS_SENT")
+    private Boolean isSent = false;
+
+    @Column(name = "SEND_DATE")
+    private LocalDate sendDate;
+
 }
