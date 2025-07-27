@@ -4,13 +4,9 @@
 
 package org.fadak.selp.selpbackend.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
+import org.fadak.selp.selpbackend.domain.constant.ProductCategory;
 
 @Getter
 @Entity
@@ -22,8 +18,9 @@ public class Product extends BaseEntity {
     @Column(name = "PRODUCT_ID")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "CATEGORY")
-    private String category;
+    private ProductCategory category;
 
     @Column(name = "NAME")
     private String name;
@@ -34,10 +31,9 @@ public class Product extends BaseEntity {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "B_CATEGORY")
-    private String bCategory;
+    @Column(name = "IMAGE_PATH", length = 1024)
+    private String imagePath;
 
-    @Column(name = "S_CATEGORY")
-    private String sCategory;
-
+    @Column(name = "DETAIL_PATH", length = 1024)
+    private String detailPath;
 }
