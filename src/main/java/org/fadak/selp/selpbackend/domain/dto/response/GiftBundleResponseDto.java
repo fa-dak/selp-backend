@@ -9,12 +9,14 @@ import org.fadak.selp.selpbackend.domain.entity.Product;
 import org.fadak.selp.selpbackend.domain.entity.ReceiverInfo;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Getter
 @Builder
 public class GiftBundleResponseDto {
     private final Long giftBundleId;
+    private final String createdDate;
 
     private final Long eventId;
     private final String eventType;
@@ -31,8 +33,12 @@ public class GiftBundleResponseDto {
         Event event = giftBundle.getEvent();
         ReceiverInfo receiverInfo = event.getReceiverInfo();
 
+        String formattedCreatedDate = giftBundle.getCreatedDate()
+                .format(DateTimeFormatter.ofPattern("yy.MM.dd"));
+
         return GiftBundleResponseDto.builder()
                 .giftBundleId(giftBundle.getId())
+                .createdDate(formattedCreatedDate)
                 .eventId(event.getId())
                 .eventType(event.getEventType())
                 .eventDate(event.getEventDate())
