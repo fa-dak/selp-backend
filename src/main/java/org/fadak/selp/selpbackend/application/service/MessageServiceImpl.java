@@ -40,7 +40,7 @@ public class MessageServiceImpl implements MessageService {
 
         List<Product> products = productRepo.findAllById(request.getProductIdList());
         String giftCategories = products.stream()
-                .map(Product::getCategory)
+                .map(product -> product.getCategory().getDescription())
                 .collect(Collectors.joining(", "));
 
         MessageContext context = MessageContext.builder()

@@ -29,6 +29,7 @@ public class GiftBundleItem extends BaseEntity {
     @JoinColumn(name = "GIFT_BUNDLE_ID")
     private GiftBundle giftBundle;
 
-    @Column(name = "PRODUCT_ID")
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PRODUCT_ID")
+    private Product product;
 }

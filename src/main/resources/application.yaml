@@ -30,13 +30,9 @@ spring:
   ai:
     openai:
       api-key: ${OPEN_AI_KEY_1}
-    vector-store:
-      chroma:
-        tenant-name: SpringAiTenant
-        database-name: SpringAiDatabase
-        collection-name: SpringAiCollection
-        client:
-          key-token: ${PROD_CHROMA_TOKEN}
+      embedding:
+        options:
+          model: text-embedding-3-small
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
