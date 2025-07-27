@@ -3,6 +3,7 @@ package org.fadak.selp.selpbackend.application.service;
 import lombok.RequiredArgsConstructor;
 import org.fadak.selp.selpbackend.application.util.OpenAiBuilderUtil;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleRecommendRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.request.GiftRecommendAgainRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.response.GiftBundleItemResponseDto;
 import org.springframework.stereotype.Service;
 
@@ -50,4 +51,24 @@ public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
         return result;
     }
 
+    @Override
+    public GiftBundleItemResponseDto recommendGiftBundleItem(GiftRecommendAgainRequestDto requestDto) {
+        GiftBundleRecommendRequestDto dto = requestDto.toGiftBundleRecommendRequestDto();
+        String textForEmbedding = OpenAiBuilderUtil.buildEmbeddingPrompt(dto, requestDto.getCategory(), requestDto.getPrice());
+
+        Map<String, Object> searchResult = embeddingSearcher.recommendSimilarProduct(textForEmbedding, 1, requestDto.getCategory(), requestDto.getPrice(), requestDto.getProductId());
+
+        if (searchResult == null) {
+            throw new IllegalArgumentException("상품 재추천 오류");
+        }
+
+        return GiftBundleItemResponseDto.builder()
+                .id(Long.valueOf((String) searchResult.get("product_id")))
+                .name((String) searchResult.get("name"))
+                .category((String) searchResult.get("category"))
+                .price(Long.valueOf((Integer) searchResult.get("price")))
+                .imagePath((String) searchResult.get("image_path"))
+                .detailPath((String) searchResult.get("detail_path"))
+                .build();
+    }
 }
