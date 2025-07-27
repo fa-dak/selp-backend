@@ -48,6 +48,9 @@ public class Notification extends BaseEntity {
     @Column(name = "IS_SENT")
     private Boolean isSent = false;
 
+    @Column(name = "IS_READ")
+    private Boolean isRead = false;
+
     @Column(name = "SEND_DATE")
     private LocalDate sendDate;
 
@@ -58,6 +61,7 @@ public class Notification extends BaseEntity {
                 member,
                 dto.getTitle(),
                 dto.getContent(),
+                false,
                 false,
                 dto.getSendDate()
         );
