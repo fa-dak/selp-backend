@@ -6,8 +6,8 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
     env_file:
       - ../.env.selp-backend
-    expose:
-      - "8080"
+    ports:
+      - "8080:35002"
     networks:
       - selp_network
     cpus: 1
