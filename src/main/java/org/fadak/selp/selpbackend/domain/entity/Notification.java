@@ -16,10 +16,12 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.fadak.selp.selpbackend.domain.dto.request.NotificationRequestDto;
 
 import java.time.LocalDate;
 @Getter
+@Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
