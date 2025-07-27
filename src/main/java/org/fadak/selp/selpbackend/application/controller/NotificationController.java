@@ -20,4 +20,10 @@ public class NotificationController {
         notificationService.registerNotification(dto);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/send")
+    public ResponseEntity<?> sendNotifications() {
+        notificationService.sendScheduledNotifications();
+        return ResponseEntity.ok().body("전송 완료");
+    }
 }
