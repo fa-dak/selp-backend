@@ -7,7 +7,7 @@ services:
     env_file:
       - ../.env.selp-backend
     ports:
-      - "8080:35002"
+      - "35002:8080"
     networks:
       - selp_network
     cpus: 1
