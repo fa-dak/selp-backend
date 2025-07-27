@@ -2,6 +2,7 @@ package org.fadak.selp.selpbackend.application.service;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,7 @@ public class EventServiceImpl implements EventService {
             .map(event -> EventListResponseDto.builder()
                 .eventId(event.getId())
                 .eventName(event.getEventName())
+                .eventDate(event.getEventDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .eventType(event.getEventType())
                 .receiverNickname(event.getReceiverInfo().getNickname())
                 .notificationDaysBefore(event.getNotificationDaysBefore())
@@ -51,7 +53,7 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public void delete(long eventId, long loginMemberId) {
-        
+
         repository.deleteByIdAndReceiverInfo_Member_Id(eventId, loginMemberId);
     }
 
