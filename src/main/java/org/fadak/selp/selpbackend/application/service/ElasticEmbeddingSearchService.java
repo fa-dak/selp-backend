@@ -3,6 +3,7 @@ package org.fadak.selp.selpbackend.application.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.ai.embedding.EmbeddingRequest;
 import org.springframework.ai.embedding.EmbeddingResponse;
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
@@ -21,6 +22,7 @@ import java.security.cert.X509Certificate;
 import java.util.*;
 
 @Component
+@RequiredArgsConstructor
 public class ElasticEmbeddingSearchService {
 
     @Value("${elasticsearch.url}")
@@ -32,14 +34,13 @@ public class ElasticEmbeddingSearchService {
     private final OpenAiEmbeddingModel openAiEmbeddingModel;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ElasticEmbeddingSearchService(OpenAiEmbeddingModel openAiEmbeddingModel) {
-        this.openAiEmbeddingModel = openAiEmbeddingModel;
-    }
-
     public List<Map<String, Object>> searchByUserInput(String prompt, int topK, String category, int budget) {
         try {
             // 1. 임베딩 생성
             float[] embeddingVector = getEmbeddingVector(prompt);
+
+            System.out.println(Arrays.toString(embeddingVector));
+
             List<Float> queryVectorList = new ArrayList<>();
             for (float v : embeddingVector) queryVectorList.add(v);
 
@@ -47,7 +48,7 @@ public class ElasticEmbeddingSearchService {
             Map<String, Object> knnQuery = new HashMap<>();
             knnQuery.put("field", "embedding");
             knnQuery.put("k", topK);
-            knnQuery.put("num_candidates", 100);
+            knnQuery.put("num_candidates", 300);
             knnQuery.put("query_vector", queryVectorList);
 
             // 카테고리 + 가격 필터
