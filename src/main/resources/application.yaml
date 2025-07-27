@@ -25,18 +25,16 @@ jwt:
 
 
 spring:
+  profiles:
+    active: dev
   application:
     name: selp-backend
   ai:
     openai:
       api-key: ${OPEN_AI_KEY_1}
-    vector-store:
-      chroma:
-        tenant-name: SpringAiTenant
-        database-name: SpringAiDatabase
-        collection-name: SpringAiCollection
-        client:
-          key-token: ${PROD_CHROMA_TOKEN}
+      embedding:
+        options:
+          model: text-embedding-3-small
 
   servlet:
     multipart:

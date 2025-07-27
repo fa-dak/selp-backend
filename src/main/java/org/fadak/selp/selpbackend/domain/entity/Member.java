@@ -11,12 +11,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Getter
 @Entity
 @Table(name = "MEMBER")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
     @Id
@@ -33,4 +37,10 @@ public class Member extends BaseEntity {
     @Column(name = "PROVIDER")
     private String provider = "KAKAO";
 
+    @Builder
+    public Member(String email, String nickname, String provider) {
+        this.email = email;
+        this.nickname = nickname;
+        this.provider = provider;
+    }
 }

@@ -23,6 +23,7 @@ spring:
       validation-timeout: 5000
       connection-timeout: 30000
 
+
   ai:
     vector-store:
       chroma:
@@ -42,3 +43,7 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+
+elasticsearch:
+  url: ${ELASTICSEARCH_URL}
+  auth: ${ELASTICSEARCH_AUTH}

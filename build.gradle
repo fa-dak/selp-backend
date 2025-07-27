@@ -39,8 +39,8 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     // spring security
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
-//    testImplementation 'org.springframework.security:spring-security-test'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
 
     // jwt (jsonwebtoken)
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
@@ -50,7 +50,11 @@ dependencies {
     // spring starter - spring ai
     implementation 'org.springframework.ai:spring-ai-advisors-vector-store'
     implementation 'org.springframework.ai:spring-ai-starter-model-openai'
-    implementation 'org.springframework.ai:spring-ai-starter-vector-store-chroma'
+    implementation 'org.springframework.ai:spring-ai-starter-vector-store-elasticsearch'
+
+    implementation 'co.elastic.clients:elasticsearch-java:8.13.3'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
 
     // spring validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -83,6 +87,7 @@ dependencyManagement {
         mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
     }
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()
