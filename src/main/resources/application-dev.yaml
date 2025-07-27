@@ -1,5 +1,5 @@
 minio:
-  url: https://selp-minio.jaeyoung2.duckdns.org
+  url: https://selp-minio.${PROD_DOMAIN}
   access-key: ${MINIO_ACCESS_KEY}
   secret-key: ${MINIO_SECRET_KEY}
   bucket: dev
@@ -28,7 +28,7 @@ spring:
     vector-store:
       chroma:
         client:
-          host: https://selp-chroma.jaeyoung2.duckdns.org
+          host: https://selp-chroma.${PROD_DOMAIN}
           port: 443
 
   jpa:

@@ -2,17 +2,17 @@ server:
   forward-headers-strategy: framework
 
 minio:
-  url: https://selp-minio.jaeyoung2.duckdns.org
+  url: https://selp-minio.${${PROD_DOMAIN}}
   access-key: ${MINIO_ACCESS_KEY}
   secret-key: ${MINIO_SECRET_KEY}
-  bucket: prod
+  bucket: dev # 향후 mysql과 함께 prod로 바꿀 예정
   region: ap-northeast-2
   presign:
     expiration-seconds: ${PROD_PRESIGNED_URL_SECONDS}   # 6시간 = 6*3600
 
 springdoc:
   swagger-ui:
-    url: https://selp-backend.jaeyoung2.duckdns.org/v3/api-docs
+    url: https://selp-backend.${${PROD_DOMAIN}}/v3/api-docs
 
 spring:
   datasource:
