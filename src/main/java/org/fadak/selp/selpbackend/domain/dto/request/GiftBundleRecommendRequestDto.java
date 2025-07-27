@@ -1,12 +1,14 @@
 package org.fadak.selp.selpbackend.domain.dto.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
 @Getter
+@Builder
 @Setter
 @AllArgsConstructor
 public class GiftBundleRecommendRequestDto {

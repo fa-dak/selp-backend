@@ -3,8 +3,8 @@ package org.fadak.selp.selpbackend.application.service;
 import lombok.RequiredArgsConstructor;
 import org.fadak.selp.selpbackend.application.util.OpenAiBuilderUtil;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleRecommendRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.request.GiftRecommendAgainRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.response.GiftBundleItemResponseDto;
-import org.fadak.selp.selpbackend.domain.dto.response.GiftBundleRecommendResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
     private final ElasticEmbeddingSearchService embeddingSearcher;
 
     @Override
-    public GiftBundleRecommendResponseDto recommendGiftBundle(GiftBundleRecommendRequestDto requestDto) {
+    public List<GiftBundleItemResponseDto> recommendGiftBundle(GiftBundleRecommendRequestDto requestDto) {
 
         // 사용자의 입력 데이터를 바탕으로 카테고리별 금액을 산정
         Map<String, Integer> categoryBudgetMap = categoryInferenceService.distributeBudget(requestDto);
@@ -41,17 +41,34 @@ public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
                         .price(Long.valueOf((Integer) product.get("price")))
                         .category((String) product.get("category"))
                         .imagePath((String) product.get("image_path"))
+                        .detailPath((String) product.get("detail_path"))
                         .build();
 
                 result.add(item);
             }
         }
 
-        for (GiftBundleItemResponseDto item : result) {
-            System.out.println(item.getName() + " " + item.getPrice());
-        }
-
-        return null;
+        return result;
     }
 
+    @Override
+    public GiftBundleItemResponseDto recommendGiftBundleItem(GiftRecommendAgainRequestDto requestDto) {
+        GiftBundleRecommendRequestDto dto = requestDto.toGiftBundleRecommendRequestDto();
+        String textForEmbedding = OpenAiBuilderUtil.buildEmbeddingPrompt(dto, requestDto.getCategory(), requestDto.getPrice());
+
+        Map<String, Object> searchResult = embeddingSearcher.recommendSimilarProduct(textForEmbedding, 1, requestDto.getCategory(), requestDto.getPrice(), requestDto.getProductId());
+
+        if (searchResult == null) {
+            throw new IllegalArgumentException("상품 재추천 오류");
+        }
+
+        return GiftBundleItemResponseDto.builder()
+                .id(Long.valueOf((String) searchResult.get("product_id")))
+                .name((String) searchResult.get("name"))
+                .category((String) searchResult.get("category"))
+                .price(Long.valueOf((Integer) searchResult.get("price")))
+                .imagePath((String) searchResult.get("image_path"))
+                .detailPath((String) searchResult.get("detail_path"))
+                .build();
+    }
 }
