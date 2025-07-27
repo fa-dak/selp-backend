@@ -12,6 +12,16 @@ spring:
     url: jdbc:mysql://${LOCAL_MYSQL_DB_HOST}/selp-dev?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${LOCAL_MYSQL_DB_USERNAME}
     password: ${LOCAL_MYSQL_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-init-sql: "SET time_zone = 'Asia/Seoul'"
+      maximum-pool-size: 20
+      minimum-idle: 3
+      idle-timeout: 300000    # 5 minutes
+      max-lifetime: 1800000   # 30 minutes
+      keepalive-time: 300000  # 5 minutes
+      validation-timeout: 5000
+      connection-timeout: 30000
 
   ai:
     vector-store:
@@ -19,3 +29,16 @@ spring:
         client:
           host: https://selp-chroma.jaeyoung2.duckdns.org
           port: 443
+
+  jpa:
+    hibernate:
+      # 처음에는 update, 배포 전에는 validate 또는 none 권장
+      ddl-auto: update
+    show-sql: true        # SQL 로그 출력 여부
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true   # 보기 좋게 포맷팅
+        jdbc:
+          lob:
+            non_contextual_creation: true
