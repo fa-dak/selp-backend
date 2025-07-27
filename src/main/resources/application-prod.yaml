@@ -2,7 +2,7 @@ server:
   forward-headers-strategy: framework
 
 minio:
-  url: https://selp-minio.${${PROD_DOMAIN}}
+  url: https://selp-minio.${PROD_DOMAIN}
   access-key: ${MINIO_ACCESS_KEY}
   secret-key: ${MINIO_SECRET_KEY}
   bucket: dev # 향후 mysql과 함께 prod로 바꿀 예정
