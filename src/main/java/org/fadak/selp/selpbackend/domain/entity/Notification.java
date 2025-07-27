@@ -13,11 +13,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.fadak.selp.selpbackend.domain.dto.request.NotificationRequestDto;
 
 import java.time.LocalDate;
 @Getter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "NOTIFICATION")
 
 public class Notification extends BaseEntity {
@@ -45,5 +50,17 @@ public class Notification extends BaseEntity {
 
     @Column(name = "SEND_DATE")
     private LocalDate sendDate;
+
+    public static Notification of(Member member, NotificationRequestDto dto) {
+        return new Notification(
+                null,
+                dto.getEventId(),
+                member,
+                dto.getTitle(),
+                dto.getContent(),
+                false,
+                dto.getSendDate()
+        );
+    }
 
 }
