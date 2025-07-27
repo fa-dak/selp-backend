@@ -13,9 +13,6 @@ spring:
     username: ${LOCAL_MYSQL_DB_USERNAME}
     password: ${LOCAL_MYSQL_DB_PASSWORD}
 
-  ai:
-    vector-store:
-      chroma:
-        client:
-          host: https://selp-chroma.jaeyoung2.duckdns.org
-          port: 443
+elasticsearch:
+  url: ${ELASTICSEARCH_URL}
+  auth: ${ELASTICSEARCH_AUTH}
