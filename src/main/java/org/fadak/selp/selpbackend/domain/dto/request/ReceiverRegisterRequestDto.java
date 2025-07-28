@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter // JSON 매핑
 @AllArgsConstructor
@@ -17,7 +19,7 @@ public class ReceiverRegisterRequestDto {
 
     private int age;
 
-    private String preferences;
+    private List<String> preferences;
 
     private String detail;
 }

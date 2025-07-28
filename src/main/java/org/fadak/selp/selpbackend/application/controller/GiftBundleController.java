@@ -3,6 +3,7 @@ package org.fadak.selp.selpbackend.application.controller;
 import lombok.RequiredArgsConstructor;
 import org.fadak.selp.selpbackend.application.service.GiftBundleFacadeService;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleRecommendRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleSaveRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftRecommendAgainRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.response.GiftBundleItemResponseDto;
 import org.springframework.http.ResponseEntity;
@@ -30,5 +31,14 @@ public class GiftBundleController {
     public ResponseEntity<?> recommendAgain(@RequestBody GiftRecommendAgainRequestDto request) {
         GiftBundleItemResponseDto result = giftBundleFacadeService.recommendGiftBundleItem(request);
         return ResponseEntity.ok(result);
+    }
+
+    /**
+     * 달력을 거치지않고 추천 받은 경우
+     */
+    @PostMapping
+    public ResponseEntity<?> registerGiftBundle(@RequestBody GiftBundleSaveRequestDto request) {
+        giftBundleFacadeService.registerGiftBundle(request, 1L);
+        return ResponseEntity.ok().build();
     }
 }

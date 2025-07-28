@@ -3,9 +3,14 @@ package org.fadak.selp.selpbackend.application.service;
 import lombok.RequiredArgsConstructor;
 import org.fadak.selp.selpbackend.application.util.OpenAiBuilderUtil;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleRecommendRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleSaveRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftRecommendAgainRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.response.GiftBundleItemResponseDto;
+import org.fadak.selp.selpbackend.domain.entity.Member;
+import org.fadak.selp.selpbackend.domain.entity.ReceiverInfo;
+import org.fadak.selp.selpbackend.domain.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +23,12 @@ public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
 
     private final CategoryInferenceService categoryInferenceService;
     private final ElasticEmbeddingSearchService embeddingSearcher;
+
+    private final MemberRepository memberRepository;
+    private final EventRepository eventRepository;
+    private final ReceiverInfoRepository receiverInfoRepository;
+    private final GiftBundleRepository giftBundleRepository;
+    private final GiftBundleItemRepository giftBundleItemRepository;
 
     @Override
     public List<GiftBundleItemResponseDto> recommendGiftBundle(GiftBundleRecommendRequestDto requestDto) {
@@ -70,5 +81,15 @@ public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
                 .imagePath((String) searchResult.get("image_path"))
                 .detailPath((String) searchResult.get("detail_path"))
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void registerGiftBundle(GiftBundleSaveRequestDto requestDto, Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(IllegalArgumentException::new);
+
+        ReceiverInfo receiverInfo =
     }
 }
