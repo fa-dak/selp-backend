@@ -11,5 +11,4 @@ public class MessageContext {
     private int age;
     private String relationship;
     private String occasion;
-    private String additionalNote;
 }
