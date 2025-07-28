@@ -1,8 +1,14 @@
 package org.fadak.selp.selpbackend.domain.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
-import org.fadak.selp.selpbackend.domain.constant.ProductCategory;
 
 @Getter
 @Entity
@@ -13,10 +19,12 @@ public class Preference extends BaseEntity {
     @Column(name = "PREFERENCE_ID")
     private Long id;
 
-    @Column(name = "CATEGORY")
+    @JoinColumn(name = "PRODUCT_CATEGORY_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
     private ProductCategory category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RECEIVER_INFO_ID")
     private ReceiverInfo receiverInfo;
+
 }

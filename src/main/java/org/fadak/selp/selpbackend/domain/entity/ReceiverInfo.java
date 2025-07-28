@@ -5,15 +5,22 @@
 package org.fadak.selp.selpbackend.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.fadak.selp.selpbackend.domain.dto.request.ReceiverModifyRequestDto;
 
-import java.util.List;
-
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Getter
 @Entity
 @Table(name = "RECEIVER_INFO")
@@ -55,27 +62,27 @@ public class ReceiverInfo extends BaseEntity {
 
     @Builder
     public ReceiverInfo(Member member, String nickname, Integer age, String gender,
-                        String relationship, String detail) {
+        String relationship, String detail, List<Preference> preferences) {
 
         this.member = member;
         this.nickname = nickname;
         this.age = age;
-        this.gender = gender != null ? gender : "NONE";
+        this.gender = gender;
         this.relationship = relationship;
         this.detail = detail;
+        this.preferences = preferences;
     }
 
-    public void update(ReceiverModifyRequestDto request) {
-        // TODO: 유효성 검사는 컨트롤러단 @Valid로 하기
-        this.nickname = request.getNickname() != null && !request.getNickname().isEmpty()
-                ? request.getNickname() : this.nickname;
-        this.age = request.getAge();
-        this.gender = request.getGender() != null && !request.getGender().isEmpty()
-                ? request.getGender() : this.gender;
-        this.relationship =
-                request.getRelationship() != null && !request.getRelationship().isEmpty()
-                        ? request.getRelationship() : this.relationship;
-        this.detail = request.getDetail() != null && !request.getDetail().isEmpty()
-                ? request.getDetail() : this.detail;
+    public void update(String nickname, Integer age, String gender,
+        String relationship, String detail, List<Preference> preferences) {
+
+        this.nickname = nickname;
+        this.age = age;
+        this.gender = gender;
+        this.relationship = relationship;
+        if (detail != null) {
+            this.detail = detail;
+        }
+        this.preferences = preferences;
     }
 }
