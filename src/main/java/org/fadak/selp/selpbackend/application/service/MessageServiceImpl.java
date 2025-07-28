@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.fadak.selp.selpbackend.application.util.GptUtil;
 import org.fadak.selp.selpbackend.domain.dto.message.MessageContext;
-import org.fadak.selp.selpbackend.domain.dto.message.MessageRequest;
 import org.fadak.selp.selpbackend.domain.dto.message.MessageResponse;
 import org.fadak.selp.selpbackend.domain.entity.Event;
+import org.fadak.selp.selpbackend.domain.entity.GiftBundle;
 import org.fadak.selp.selpbackend.domain.entity.ReceiverInfo;
 import org.fadak.selp.selpbackend.domain.repository.EventRepository;
+import org.fadak.selp.selpbackend.domain.repository.GiftBundleRepository;
 import org.fadak.selp.selpbackend.domain.repository.ReceiverInfoRepository;
 import org.fadak.selp.selpbackend.exception.MessageException;
 import org.springframework.ai.chat.model.ChatModel;
@@ -25,31 +26,36 @@ import java.util.stream.Collectors;
 public class MessageServiceImpl implements MessageService {
 
     private final ReceiverInfoRepository receiverRepo;
+    private final GiftBundleRepository giftBundleRepo;
     private final EventRepository eventRepo;
     private final ChatModel chatModel;
 
-    public MessageResponse recommendMessage(MessageRequest request) {
-        ReceiverInfo receiver = receiverRepo.findById(request.getReceiverInfoId())
-                .orElseThrow(() -> new MessageException("받는 사람 없음"));
-        Event event = eventRepo.findById(request.getEventId())
+    @Override
+    public MessageResponse recommendMessage(Long bundleId, String tone) throws MessageException {
+        // 1. giftBundle → event
+        GiftBundle giftBundle = giftBundleRepo.findById(bundleId)
+                .orElseThrow(() -> new MessageException("선물꾸러미 없음"));
+        Event event = eventRepo.findById(giftBundle.getEvent().getId())
                 .orElseThrow(() -> new MessageException("기념일 없음"));
 
+        // 2. event → receiver
+        ReceiverInfo receiver = receiverRepo.findById(event.getReceiverInfo().getId())
+                .orElseThrow(() -> new MessageException("받는 사람 정보 없음"));
+
+        // 3. context 구성
         MessageContext context = MessageContext.builder()
-                .style(request.getStyle())
+                .style(tone)
                 .gender(receiver.getGender())
                 .age(receiver.getAge())
                 .relationship(receiver.getRelationship())
                 .occasion(event.getEventType())
-                .additionalNote(request.getAdditionalNote())
                 .build();
 
         String promptText = GptUtil.buildMessagePrompt(context);
         log.info("prompt:: " + promptText);
 
-        // 5. 호출
         String generation = GptUtil.callGpt(chatModel, promptText);
         log.info("response:: {}", generation);
-
 
         List<String> messages = Arrays.stream(generation.split("\n"))
                 .map(line -> line.replaceAll("^\\d+\\.\\s*", ""))
@@ -58,4 +64,5 @@ public class MessageServiceImpl implements MessageService {
 
         return new MessageResponse(messages);
     }
+
 }
