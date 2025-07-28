@@ -3,6 +3,7 @@ package org.fadak.selp.selpbackend.application.controller;
 import lombok.RequiredArgsConstructor;
 import org.fadak.selp.selpbackend.application.service.GiftBundleFacadeService;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleRecommendRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleSaveFromCalendarRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleSaveRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftRecommendAgainRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.response.GiftBundleItemResponseDto;
@@ -41,4 +42,14 @@ public class GiftBundleController {
         giftBundleFacadeService.registerGiftBundle(request, 1L);
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * 달력을 거치고 추천하는 경우
+     */
+    @PostMapping("/calendar")
+    public ResponseEntity<?> registerGiftBundleFromCalendar(@RequestBody GiftBundleSaveFromCalendarRequestDto request) {
+        giftBundleFacadeService.registerGiftBundleFromCalendar(request, 1L);
+        return ResponseEntity.ok().build();
+    }
+
 }

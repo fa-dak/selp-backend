@@ -5,22 +5,14 @@
 package org.fadak.selp.selpbackend.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import java.util.List;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+import java.util.List;
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
 @Entity
 @Table(name = "RECEIVER_INFO")
@@ -40,7 +32,7 @@ public class ReceiverInfo extends BaseEntity {
     private String nickname;
 
     @Column(name = "AGE")
-    private Integer age;
+    private int age;
 
     @Column(name = "GENDER")
     private String gender = "NONE";
@@ -61,8 +53,8 @@ public class ReceiverInfo extends BaseEntity {
     private List<Preference> preferences;
 
     @Builder
-    public ReceiverInfo(Member member, String nickname, Integer age, String gender,
-        String relationship, String detail, List<Preference> preferences) {
+    public ReceiverInfo(Member member, String nickname, int age, String gender,
+                        String relationship, String detail, List<Preference> preferences) {
 
         this.member = member;
         this.nickname = nickname;
@@ -73,8 +65,8 @@ public class ReceiverInfo extends BaseEntity {
         this.preferences = preferences;
     }
 
-    public void update(String nickname, Integer age, String gender,
-        String relationship, String detail, List<Preference> preferences) {
+    public void update(String nickname, int age, String gender,
+                       String relationship, String detail, List<Preference> preferences) {
 
         this.nickname = nickname;
         this.age = age;

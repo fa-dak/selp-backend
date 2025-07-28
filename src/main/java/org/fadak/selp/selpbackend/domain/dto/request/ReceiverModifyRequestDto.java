@@ -1,15 +1,14 @@
 package org.fadak.selp.selpbackend.domain.dto.request;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter // JSON 매핑
@@ -26,8 +25,6 @@ public class ReceiverModifyRequestDto {
     @NotBlank(message = "관계는 비어 있을 수 없습니다.")
     private String relationship;
 
-    @Min(value = 0, message = "나이는 0 이상이어야 합니다.")
-    @Max(value = 150, message = "나이는 150 이하이어야 합니다.")
     private int age;
 
     @NotNull(message = "취향 목록은 null일 수 없습니다.")

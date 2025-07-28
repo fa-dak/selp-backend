@@ -1,6 +1,7 @@
 package org.fadak.selp.selpbackend.application.service;
 
 import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleRecommendRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleSaveFromCalendarRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleSaveRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftRecommendAgainRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.response.GiftBundleItemResponseDto;
@@ -14,4 +15,5 @@ public interface GiftBundleFacadeService {
 
     public void registerGiftBundle(GiftBundleSaveRequestDto requestDto, Long memberId);
 
+    public void registerGiftBundleFromCalendar(GiftBundleSaveFromCalendarRequestDto requestDto, Long memberId);
 }
