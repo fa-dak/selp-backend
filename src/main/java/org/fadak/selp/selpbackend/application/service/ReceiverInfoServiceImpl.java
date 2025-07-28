@@ -85,4 +85,20 @@ public class ReceiverInfoServiceImpl implements ReceiverInfoService {
         return repository.findById(receiverId)
             .orElseThrow(IllegalArgumentException::new);
     }
+
+    @Override
+    public ReceiverInfoListResponseDto getReceiverInfoDetail(long receiverInfoId, long memberId) {
+        ReceiverInfo receiverInfo = repository.findByIdAndMember_Id(receiverInfoId, memberId)
+            .orElseThrow(() -> new IllegalArgumentException("Receiver not found"));
+
+        return ReceiverInfoListResponseDto.builder()
+            .receiverInfoId(receiverInfo.getId())
+            .receiverNickname(receiverInfo.getNickname())
+            .receiverAge(receiverInfo.getAge())
+            .receiverGender(receiverInfo.getGender())
+            .relationship(receiverInfo.getRelationship())
+            .receiverPreferences(receiverInfo.getPreferences())
+            .receiverDetail(receiverInfo.getDetail())
+            .build();
+    }
 }
