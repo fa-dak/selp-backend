@@ -4,15 +4,8 @@
 
 package org.fadak.selp.selpbackend.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -32,4 +25,10 @@ public class GiftBundleItem extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;
+
+    @Builder
+    public GiftBundleItem(GiftBundle giftBundle, Product product) {
+        this.giftBundle = giftBundle;
+        this.product = product;
+    }
 }

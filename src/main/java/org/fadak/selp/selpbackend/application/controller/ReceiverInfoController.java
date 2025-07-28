@@ -1,5 +1,6 @@
 package org.fadak.selp.selpbackend.application.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.fadak.selp.selpbackend.application.service.ReceiverInfoService;
@@ -50,7 +51,7 @@ public class ReceiverInfoController {
 
     @PostMapping
     public ResponseEntity<?> registerReceiverInfo(
-        @RequestBody ReceiverRegisterRequestDto request
+        @Valid @RequestBody ReceiverRegisterRequestDto request
     ) {
 
         long loginMemberId = 1L;
@@ -60,7 +61,7 @@ public class ReceiverInfoController {
 
     @PutMapping("/{receiver-info-id}")
     public ResponseEntity<?> modifyReceiverInfo(
-        @RequestBody ReceiverModifyRequestDto request,
+        @Valid @RequestBody ReceiverModifyRequestDto request,
         @PathVariable("receiver-info-id") Long receiverInfoId
     ) {
 

@@ -6,10 +6,13 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@NoArgsConstructor
 @Table(name = "GIFT_BUNDLE")
 public class GiftBundle extends BaseEntity {
 
@@ -29,4 +32,9 @@ public class GiftBundle extends BaseEntity {
     @OneToMany(mappedBy = "giftBundle")
     private List<GiftBundleItem> giftBundleItems = new ArrayList<>();
 
+    @Builder
+    public GiftBundle(Member member, Event event) {
+        this.member = member;
+        this.event = event;
+    }
 }

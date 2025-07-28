@@ -3,6 +3,8 @@ package org.fadak.selp.selpbackend.application.controller;
 import lombok.RequiredArgsConstructor;
 import org.fadak.selp.selpbackend.application.service.GiftBundleFacadeService;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleRecommendRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleSaveFromCalendarRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleSaveRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftRecommendAgainRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.response.GiftBundleItemResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,25 @@ public class GiftBundleController {
         GiftBundleItemResponseDto result = giftBundleFacadeService.recommendGiftBundleItem(request);
         return ResponseEntity.ok(result);
     }
+
+    /**
+     * 달력을 거치지않고 추천 받은 경우
+     */
+    @PostMapping
+    public ResponseEntity<?> registerGiftBundle(@RequestBody GiftBundleSaveRequestDto request) {
+        giftBundleFacadeService.registerGiftBundle(request, 1L);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 달력을 거치고 추천하는 경우
+     */
+    @PostMapping("/calendar")
+    public ResponseEntity<?> registerGiftBundleFromCalendar(@RequestBody GiftBundleSaveFromCalendarRequestDto request) {
+        giftBundleFacadeService.registerGiftBundleFromCalendar(request, 1L);
+        return ResponseEntity.ok().build();
+    }
+
 
     @GetMapping("/gift-bundles")
     public ResponseEntity<List<GiftBundleResponseDto>> getMyGiftBundles(

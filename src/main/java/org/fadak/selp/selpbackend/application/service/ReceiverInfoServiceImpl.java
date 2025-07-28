@@ -7,6 +7,7 @@ import org.fadak.selp.selpbackend.domain.dto.request.ReceiverModifyRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.ReceiverRegisterRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.response.ReceiverInfoListResponseDto;
 import org.fadak.selp.selpbackend.domain.entity.ReceiverInfo;
+import org.fadak.selp.selpbackend.domain.repository.PreferenceRepository;
 import org.fadak.selp.selpbackend.domain.repository.ReceiverInfoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ReceiverInfoServiceImpl implements ReceiverInfoService {
 
+    private final PreferenceRepository preferenceRepository;
     private final ReceiverInfoRepository repository;
     private final MemberService memberService;
 
@@ -25,17 +27,23 @@ public class ReceiverInfoServiceImpl implements ReceiverInfoService {
         List<ReceiverInfo> receiverInfoList = repository.findAllByMemberId(memberId);
 
         return receiverInfoList.stream()
-            .map(receiverInfo ->
-                ReceiverInfoListResponseDto.builder()
+            .map(receiverInfo -> {
+                List<String> categoryNames = receiverInfo.getPreferences()
+                    .stream()
+                    .map(p -> p.getCategory().getName())
+                    .toList();
+
+                return ReceiverInfoListResponseDto.builder()
                     .receiverInfoId(receiverInfo.getId())
                     .receiverNickname(receiverInfo.getNickname())
                     .receiverAge(receiverInfo.getAge())
                     .receiverGender(receiverInfo.getGender())
                     .relationship(receiverInfo.getRelationship())
-                    .receiverPreferences(receiverInfo.getPreferences())
+                    .receiverPreferences(categoryNames)
                     .receiverDetail(receiverInfo.getDetail())
-                    .build()
-            ).toList();
+                    .build();
+            })
+            .toList();
     }
 
     @Override
@@ -58,7 +66,13 @@ public class ReceiverInfoServiceImpl implements ReceiverInfoService {
             .age(request.getAge())
             .gender(request.getGender())
             .relationship(request.getRelationship())
-            .preferences(request.getPreferences())
+            .preferences(request.getPreferenceIds()
+                .stream()
+                .map(
+                    preferenceId -> preferenceRepository.findById(preferenceId)
+                        .orElseThrow(IllegalArgumentException::new)
+                ).toList()
+            )
             .detail(request.getDetail())
             .build();
 
@@ -75,7 +89,21 @@ public class ReceiverInfoServiceImpl implements ReceiverInfoService {
 
         ReceiverInfo receiverInfo = repository.findByIdAndMember_Id(receiverInfoId, loginMemberId)
             .orElseThrow(IllegalArgumentException::new);
-        receiverInfo.update(request);
+
+        receiverInfo.update(
+            request.getNickname(),
+            request.getAge(),
+            request.getGender(),
+            request.getRelationship(),
+            request.getDetail(),
+            request.getPreferenceIds()
+                .stream()
+                .map(
+                    preferenceId -> preferenceRepository.findById(preferenceId)
+                        .orElseThrow(IllegalArgumentException::new)
+                ).toList()
+        );
+
         repository.save(receiverInfo);
     }
 
