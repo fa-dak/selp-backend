@@ -52,31 +52,34 @@ public class ReceiverInfoController {
 
     @DeleteMapping("/{receiver-info-id}")
     public ResponseEntity<?> deleteReceiverInfoById(
+        @AuthenticationPrincipal UserPrincipal userPrincipal,
         @PathVariable("receiver-info-id") Long receiverInfoId
     ) {
 
-        long loginMemberId = 1L;
+        long loginMemberId = userPrincipal.getId();
         receiverInfoService.delete(receiverInfoId, loginMemberId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping
     public ResponseEntity<?> registerReceiverInfo(
+        @AuthenticationPrincipal UserPrincipal userPrincipal,
         @RequestBody ReceiverRegisterRequestDto request
     ) {
 
-        long loginMemberId = 1L;
+        long loginMemberId = userPrincipal.getId();
         receiverInfoService.registerReceiverInfo(request, loginMemberId);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{receiver-info-id}")
     public ResponseEntity<?> modifyReceiverInfo(
+        @AuthenticationPrincipal UserPrincipal userPrincipal,
         @RequestBody ReceiverModifyRequestDto request,
         @PathVariable("receiver-info-id") Long receiverInfoId
     ) {
 
-        long loginMemberId = 1L;
+        long loginMemberId = userPrincipal.getId();
         receiverInfoService.modifyReceiverInfo(request, receiverInfoId, loginMemberId);
         return ResponseEntity.ok().build();
     }
