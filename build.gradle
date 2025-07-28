@@ -78,6 +78,10 @@ dependencies {
     implementation("io.minio:minio:8.5.7")
 //    implementation("io.awspring.cloud:spring-cloud-starter-aws:3.0.2")
 
+
+    //firebase
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+
     // test
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

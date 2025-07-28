@@ -13,11 +13,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.fadak.selp.selpbackend.domain.dto.request.NotificationRequestDto;
 
+import java.time.LocalDate;
 @Getter
+@Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "NOTIFICATION")
+
 public class Notification extends BaseEntity {
 
     @Id
@@ -32,15 +41,32 @@ public class Notification extends BaseEntity {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @Column(name = "EVENT_TYPE")
-    private String eventType;
-
     @Column(name = "TITLE")
     private String title;
 
     @Column(name = "CONTENT")
     private String content;
 
+    @Column(name = "IS_SENT")
+    private Boolean isSent = false;
+
     @Column(name = "IS_READ")
     private Boolean isRead = false;
+
+    @Column(name = "SEND_DATE")
+    private LocalDate sendDate;
+
+    public static Notification of(Member member, NotificationRequestDto dto) {
+        return new Notification(
+                null,
+                dto.getEventId(),
+                member,
+                dto.getTitle(),
+                dto.getContent(),
+                false,
+                false,
+                dto.getSendDate()
+        );
+    }
+
 }
