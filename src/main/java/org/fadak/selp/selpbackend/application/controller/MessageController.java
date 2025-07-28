@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.fadak.selp.selpbackend.application.service.MessageService;
 
 @RestController
-@RequestMapping("/api/messages")
+@RequestMapping("/messages")
 @RequiredArgsConstructor
 public class MessageController {
 
