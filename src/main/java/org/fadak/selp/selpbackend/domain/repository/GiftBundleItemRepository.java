@@ -11,4 +11,6 @@ import java.util.List;
 public interface GiftBundleItemRepository extends JpaRepository<GiftBundleItem, Long> {
 
     List<GiftBundleItem> findAllByGiftBundleIdIn(Collection<Long> giftBundleIds);
+
+    List<GiftBundleItem> findAllByGiftBundleId(Long giftBundleId);
 }

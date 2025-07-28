@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,5 +60,31 @@ public class GiftBundleServiceImpl implements GiftBundleService {
                 giftBundle,
                 itemsByBundleId.getOrDefault(giftBundle.getId(), List.of())
         )).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public GiftBundleResponseDto getMyGiftBundleDetail(Long bundleId, Long memberId) {
+        // fetch join 으로 giftBundle, event, receiverInfo 조회
+        GiftBundle giftBundle = giftBundleRepository.findDetailsByIdAndMemberId(bundleId, memberId)
+                .orElseThrow(() -> new NoSuchElementException("해당 선물 꾸러미를 찾을 수 없습니다."));
+
+        // GiftBundleItem을 조회
+        List<GiftBundleItem> giftBundleItems = giftBundleItemRepository.findAllByGiftBundleId(bundleId);
+
+        // ProductId 목록 추출
+        List<Long> productIds = giftBundleItems.stream().map(GiftBundleItem::getProductId).distinct().toList();
+
+        // 관련된 Product 조회
+        List<Product> products = productRepository.findAllById(productIds);
+        Map<Long, Product> productMap = products.stream().collect(Collectors.toMap(Product::getId, p -> p));
+
+        // ProductDto 목록 생성
+        List<GiftBundleResponseDto.ProductDto> productDtos = giftBundleItems.stream()
+                .map(item -> GiftBundleResponseDto.ProductDto.from(productMap.get(item.getProductId())))
+                .collect(Collectors.toList());
+
+        // DTO 조립 및 반환
+        return GiftBundleResponseDto.from(giftBundle, productDtos);
     }
 }

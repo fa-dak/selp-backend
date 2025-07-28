@@ -13,4 +13,6 @@ public interface GiftBundleService {
      * @return 선물 담긴 꾸러미 목록
      */
     List<GiftBundleResponseDto> getMyGiftBundles(Long memberId, Sort sort);
+
+    GiftBundleResponseDto getMyGiftBundleDetail(Long bundleId, Long memberId);
 }

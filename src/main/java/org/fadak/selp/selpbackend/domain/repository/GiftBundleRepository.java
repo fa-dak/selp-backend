@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface GiftBundleRepository extends JpaRepository<GiftBundle, Long> {
@@ -24,4 +25,11 @@ public interface GiftBundleRepository extends JpaRepository<GiftBundle, Long> {
             "JOIN FETCH e.receiverInfo r " +
             "WHERE gb.member.id = :memberId")
     List<GiftBundle> findAllByMemberIdWithDetails(@Param("memberId") Long memberId, Sort sort);
+
+    @Query("SELECT gb " +
+            "FROM GiftBundle gb " +
+            "JOIN FETCH gb.event e " +
+            "JOIN FETCH e.receiverInfo r " +
+            "WHERE gb.id = :bundleId AND gb.member.id = :memberId")
+    Optional<GiftBundle> findDetailsByIdAndMemberId(@Param("bundleId") Long bundleId, @Param("memberId") Long memberId);
 }
