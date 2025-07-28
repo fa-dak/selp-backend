@@ -1,6 +1,10 @@
 package org.fadak.selp.selpbackend.application.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.fadak.selp.selpbackend.application.service.GiftBundleFacadeService;
+import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleRecommendRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.request.GiftRecommendAgainRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.response.GiftBundleItemResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.fadak.selp.selpbackend.application.service.GiftBundleService;
 import org.fadak.selp.selpbackend.domain.auth.UserPrincipal;
@@ -11,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,10 +24,23 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/mypage")
 @RequiredArgsConstructor
+@RequestMapping("/gift-bundle")
 public class GiftBundleController {
     private final GiftBundleService giftBundleService;
+    private final GiftBundleFacadeService giftBundleFacadeService;
+
+    @PostMapping("/recommend")
+    public ResponseEntity<?> recommend(@RequestBody GiftBundleRecommendRequestDto request) {
+        List<GiftBundleItemResponseDto> result = giftBundleFacadeService.recommendGiftBundle(request);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/recommend-again")
+    public ResponseEntity<?> recommendAgain(@RequestBody GiftRecommendAgainRequestDto request) {
+        GiftBundleItemResponseDto result = giftBundleFacadeService.recommendGiftBundleItem(request);
+        return ResponseEntity.ok(result);
+    }
 
     @GetMapping("/gift-bundles")
     public ResponseEntity<List<GiftBundleResponseDto>> getMyGiftBundles(

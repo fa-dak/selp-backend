@@ -19,17 +19,21 @@ public interface GiftBundleRepository extends JpaRepository<GiftBundle, Long> {
      * @param sort
      * @return
      */
-    @Query("SELECT gb " +
+    @Query("SELECT DISTINCT gb " +
             "FROM GiftBundle gb " +
-            "JOIN FETCH gb.event e " +
-            "JOIN FETCH e.receiverInfo r " +
+            "LEFT JOIN FETCH gb.event e " +
+            "LEFT JOIN FETCH e.receiverInfo r " +
+            "LEFT JOIN FETCH gb.giftBundleItems gbi " +
+            "LEFT JOIN FETCH gbi.product p " +
             "WHERE gb.member.id = :memberId")
     List<GiftBundle> findAllByMemberIdWithDetails(@Param("memberId") Long memberId, Sort sort);
 
     @Query("SELECT gb " +
             "FROM GiftBundle gb " +
-            "JOIN FETCH gb.event e " +
-            "JOIN FETCH e.receiverInfo r " +
+            "LEFT JOIN FETCH gb.event e " +
+            "LEFT JOIN FETCH e.receiverInfo r " +
+            "LEFT JOIN FETCH gb.giftBundleItems gbi " +
+            "LEFT JOIN FETCH gbi.product p " +
             "WHERE gb.id = :bundleId AND gb.member.id = :memberId")
     Optional<GiftBundle> findDetailsByIdAndMemberId(@Param("bundleId") Long bundleId, @Param("memberId") Long memberId);
 }

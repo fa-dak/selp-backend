@@ -2,17 +2,17 @@ server:
   forward-headers-strategy: framework
 
 minio:
-  url: https://selp-minio.jaeyoung2.duckdns.org
+  url: https://selp-minio.${PROD_DOMAIN}
   access-key: ${MINIO_ACCESS_KEY}
   secret-key: ${MINIO_SECRET_KEY}
-  bucket: prod
+  bucket: dev # 향후 mysql과 함께 prod로 바꿀 예정
   region: ap-northeast-2
   presign:
     expiration-seconds: ${PROD_PRESIGNED_URL_SECONDS}   # 6시간 = 6*3600
 
 springdoc:
   swagger-ui:
-    url: https://selp-backend.jaeyoung2.duckdns.org/v3/api-docs
+    url: https://selp-backend.${PROD_DOMAIN}/v3/api-docs
 
 spring:
   datasource:
@@ -20,6 +20,16 @@ spring:
     url: jdbc:mysql://selp-mysql-db:3306/selp-dev?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${PROD_MYSQL_DB_USERNAME}
     password: ${PROD_MYSQL_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-init-sql: "SET time_zone = 'Asia/Seoul'"
+      maximum-pool-size: 20
+      minimum-idle: 3
+      idle-timeout: 300000    # 5 minutes
+      max-lifetime: 1800000   # 30 minutes
+      keepalive-time: 300000  # 5 minutes
+      validation-timeout: 5000
+      connection-timeout: 30000
 
   ai:
     vector-store:
@@ -27,3 +37,16 @@ spring:
         client:
           host: http://selp-chroma-db
           port: 8000
+
+  jpa:
+    hibernate:
+      # 처음에는 update, 배포 전에는 validate 또는 none 권장
+      ddl-auto: validate
+    show-sql: false # SQL 로그 출력 여부
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true   # 보기 좋게 포맷팅
+        jdbc:
+          lob:
+            non_contextual_creation: true

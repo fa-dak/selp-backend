@@ -50,7 +50,11 @@ dependencies {
     // spring starter - spring ai
     implementation 'org.springframework.ai:spring-ai-advisors-vector-store'
     implementation 'org.springframework.ai:spring-ai-starter-model-openai'
-    implementation 'org.springframework.ai:spring-ai-starter-vector-store-chroma'
+    implementation 'org.springframework.ai:spring-ai-starter-vector-store-elasticsearch'
+
+    implementation 'co.elastic.clients:elasticsearch-java:8.13.3'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
 
     // spring validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -74,6 +78,10 @@ dependencies {
     implementation("io.minio:minio:8.5.7")
 //    implementation("io.awspring.cloud:spring-cloud-starter-aws:3.0.2")
 
+
+    //firebase
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+
     // test
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
@@ -83,6 +91,7 @@ dependencyManagement {
         mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
     }
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()
