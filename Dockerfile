@@ -2,7 +2,7 @@
 FROM eclipse-temurin:21-jre-alpine
 
 # 필수 툴 (ca-certificates) 설치 (Alpine은 기본 미포함)
-RUN apk add --no-cache curl ca-certificates openjdk17 keytool
+RUN apk add --no-cache curl ca-certificates
 
 
 # 인증서 복사
