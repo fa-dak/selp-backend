@@ -2,6 +2,8 @@ package org.fadak.selp.selpbackend.domain.repository;
 
 import org.fadak.selp.selpbackend.domain.entity.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -21,4 +23,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Optional<Event> findByIdAndReceiverInfo_Member_Id(Long id, Long receiverInfoMemberId);
 
     Optional<Event> findById(Long id);
+
+    @Query("SELECT e FROM Event e WHERE e.receiverInfo.member.id = :memberId AND e.eventDate >= :today ORDER BY e.eventDate ASC")
+    List<Event> findTop5UpcomingEvents(@Param("memberId") Long memberId, @Param("today") LocalDate today);
+
+//    @Query("SELECT e FROM Event e WHERE  e.eventDate >= :today ORDER BY e.eventDate ASC")
+//    List<Event> findTop5UpcomingEvents( @Param("today") LocalDate today);
 }

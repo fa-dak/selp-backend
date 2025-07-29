@@ -36,4 +36,6 @@ public interface GiftBundleRepository extends JpaRepository<GiftBundle, Long> {
             "LEFT JOIN FETCH gbi.product p " +
             "WHERE gb.id = :bundleId AND gb.member.id = :memberId")
     Optional<GiftBundle> findDetailsByIdAndMemberId(@Param("bundleId") Long bundleId, @Param("memberId") Long memberId);
+
+    Optional<GiftBundle> findTopByMemberIdOrderByCreatedDateDesc(Long memberId);
 }
