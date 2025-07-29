@@ -1,6 +1,5 @@
 package org.fadak.selp.selpbackend.application.controller;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.fadak.selp.selpbackend.application.service.GiftBundleFacadeService;
@@ -16,12 +15,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -34,19 +30,17 @@ public class GiftBundleController {
 
     @PostMapping("/recommend")
     public ResponseEntity<?> recommend(
-        @AuthenticationPrincipal UserPrincipal userPrincipal,
-        @RequestBody GiftBundleRecommendRequestDto request
+            @RequestBody GiftBundleRecommendRequestDto request
     ) {
 
         List<GiftBundleItemResponseDto> result = giftBundleFacadeService.recommendGiftBundle(
-            request);
+                request);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/recommend-again")
     public ResponseEntity<?> recommendAgain(
-        @AuthenticationPrincipal UserPrincipal userPrincipal,
-        @RequestBody GiftRecommendAgainRequestDto request
+            @RequestBody GiftRecommendAgainRequestDto request
     ) {
 
         GiftBundleItemResponseDto result = giftBundleFacadeService.recommendGiftBundleItem(request);
@@ -58,12 +52,10 @@ public class GiftBundleController {
      */
     @PostMapping
     public ResponseEntity<?> registerGiftBundle(
-        @AuthenticationPrincipal UserPrincipal userPrincipal,
-        @RequestBody GiftBundleSaveRequestDto request
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody GiftBundleSaveRequestDto request
     ) {
-
-        long loginMemberId = userPrincipal.getId();
-        giftBundleFacadeService.registerGiftBundle(request, 1L);
+        giftBundleFacadeService.registerGiftBundle(request, userPrincipal.getId());
         return ResponseEntity.ok().build();
     }
 
@@ -72,38 +64,37 @@ public class GiftBundleController {
      */
     @PostMapping("/calendar")
     public ResponseEntity<?> registerGiftBundleFromCalendar(
-        @AuthenticationPrincipal UserPrincipal userPrincipal,
-        @RequestBody GiftBundleSaveFromCalendarRequestDto request) {
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody GiftBundleSaveFromCalendarRequestDto request) {
 
-        long loginMemberId = userPrincipal.getId();
-        giftBundleFacadeService.registerGiftBundleFromCalendar(request, 1L);
+        giftBundleFacadeService.registerGiftBundleFromCalendar(request, userPrincipal.getId());
         return ResponseEntity.ok().build();
     }
 
 
     @GetMapping("/gift-bundles")
     public ResponseEntity<List<GiftBundleResponseDto>> getMyGiftBundles(
-        @AuthenticationPrincipal UserPrincipal userPrincipal,
-        @SortDefault(sort = "createdDate", direction = Sort.Direction.DESC) Sort sort
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @SortDefault(sort = "createdDate", direction = Sort.Direction.DESC) Sort sort
     ) {
 
         long loginMemberId = userPrincipal.getId();
         List<GiftBundleResponseDto> giftBundles = giftBundleService.getMyGiftBundles(
-            loginMemberId,
-            sort);
+                loginMemberId,
+                sort);
         return ResponseEntity.ok(giftBundles);
     }
 
     @GetMapping("/gift-bundles/{bundleId}")
     public ResponseEntity<GiftBundleResponseDto> getMyGiftBundleDetail(
-        @AuthenticationPrincipal UserPrincipal userPrincipal,
-        @PathVariable Long bundleId
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable Long bundleId
     ) {
 
         long loginMemberId = userPrincipal.getId();
         GiftBundleResponseDto giftBundle = giftBundleService.getMyGiftBundleDetail(
-            bundleId,
-            loginMemberId);
+                bundleId,
+                loginMemberId);
         return ResponseEntity.ok(giftBundle);
     }
 }

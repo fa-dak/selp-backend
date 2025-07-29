@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class GiftBundleRecommendRequestDto {
-    private String ageRange;
+    private int ageRange;
     private String anniversaryType;
     private List<String> categories;
     private String relation;

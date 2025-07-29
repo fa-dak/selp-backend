@@ -25,7 +25,7 @@ public class OpenAiBuilderUtil {
                 }
                 """.formatted(
                 dto.getBudget(),
-                dto.getAgeRange(),
+                dto.getAgeRange() + "대",
                 dto.getGender(),
                 dto.getRelation(),
                 dto.getAnniversaryType(),
@@ -37,7 +37,7 @@ public class OpenAiBuilderUtil {
     public static String buildEmbeddingPrompt(GiftBundleRecommendRequestDto requestDto, String category, int budget) {
         return String.format(
                 "나이대: %s, 성별: %s, 관계: %s, 기념일: %s, 카테고리: %s, 예산: %d원, 요구사항: '%s'",
-                requestDto.getAgeRange(),
+                requestDto.getAgeRange() + "대",
                 requestDto.getGender(),
                 requestDto.getRelation(),
                 requestDto.getAnniversaryType(),
