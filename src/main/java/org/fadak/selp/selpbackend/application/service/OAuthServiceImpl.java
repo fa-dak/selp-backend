@@ -35,7 +35,11 @@ public class OAuthServiceImpl implements OAuthService {
             return memberRepository.save(newMember);
         });
 
-        String accessToken = jwtTokenProvider.createAccessToken(member.getId());
+        java.util.Map<String, Object> claims = new java.util.HashMap<>();
+        claims.put("email", member.getEmail());
+        claims.put("nickname", member.getNickname());
+
+        String accessToken = jwtTokenProvider.createAccessToken(member.getId(), claims);
 
         // 리프레시 토큰은 사용되진 않음
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
