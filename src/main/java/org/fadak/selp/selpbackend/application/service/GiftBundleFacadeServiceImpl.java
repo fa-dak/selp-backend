@@ -94,21 +94,37 @@ public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
 
         log.info("=== 꾸러미 저장 시작 ===");
         log.info("memberId: {}", memberId);
-        log.info("requestDto: {}", requestDto);
+        log.info("requestDto: {}", requestDto.toString());
+
+//        Member member = memberRepository.findById(memberId)
+//                .orElseThrow(IllegalArgumentException::new);
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> {
+                    log.error("❌ Member not found: id={}", memberId);
+                    return new IllegalArgumentException("회원 없음");
+                });
 
+        log.info("✅ Member: {}", member.toString());
 
         ReceiverInfo receiverInfo = requestDto.toReceiverInfo(member);
+        log.info("📦 ReceiverInfo(before save): {}", receiverInfo);
+
         ReceiverInfo receiverInfoEntity = receiverInfoRepository.save(receiverInfo); // 주변인 정보 저장
+        log.info("📦 ReceiverInfo(after save): {}", receiverInfoEntity);
 
         Event event = requestDto.toEvent(receiverInfoEntity);
+        log.info("📅 Event(before save): {}", event);
+
         Event eventEntity = eventRepository.save(event); // 이벤트 저장
+        log.info("📅 Event(after save): {}", eventEntity);
 
         // 주변인 선호 저장
         List<String> categories = requestDto.getCategories();
+        log.info("📁 카테고리 요청: {}", categories);
+
         List<ProductCategory> productCategories = productCategoryRepository.findByNameIn(categories);
+        log.info("📁 매핑된 카테고리: {}", productCategories);
 
         List<Preference> preferences = productCategories.stream()
                 .map(category -> Preference.builder()
