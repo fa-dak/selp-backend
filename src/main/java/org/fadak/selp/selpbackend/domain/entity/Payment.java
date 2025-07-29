@@ -2,6 +2,8 @@ package org.fadak.selp.selpbackend.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -42,6 +44,7 @@ public class Payment extends BaseEntity {
     private int amount;
 
     @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING)
     private PayStatus status;
 
     @Builder
