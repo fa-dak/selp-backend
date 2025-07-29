@@ -2,6 +2,7 @@ package org.fadak.selp.selpbackend.domain.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.fadak.selp.selpbackend.domain.constant.EventType;
 
 @Getter
 @Builder
@@ -11,7 +12,7 @@ public class EventListResponseDto {
 
     private String eventName;
 
-    private String eventType;
+    private EventType eventType;
 
     private String eventDate;
 

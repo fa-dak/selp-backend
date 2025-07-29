@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.fadak.selp.selpbackend.domain.constant.EventType;
+import org.fadak.selp.selpbackend.domain.constant.Gender;
 
 import java.util.List;
 
@@ -12,11 +14,12 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class GiftBundleRecommendRequestDto {
+
     private int ageRange;
-    private String anniversaryType;
+    private EventType anniversaryType;
     private List<String> categories;
     private String relation;
-    private String gender;
+    private Gender gender;
     private int budget;
     private String userMessage;
 }
