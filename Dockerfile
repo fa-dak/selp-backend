@@ -1,6 +1,9 @@
 # Java 21 JRE 기반, 경량 Alpine
 FROM eclipse-temurin:21-jre-alpine
 
+# ca-certificates 설치 (Alpine은 기본 미포함)
+RUN apk add --no-cache ca-certificates
+
 # 인증서 복사
 COPY http_ca.crt /usr/local/share/ca-certificates/http_ca.crt
 
