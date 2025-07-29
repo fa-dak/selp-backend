@@ -18,7 +18,11 @@ public class HomeController {
     private final HomeService homeService;
 
     @GetMapping("/main")
-    public ResponseEntity<HomeResponseDto> getHomeData(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-        return ResponseEntity.ok(homeService.getHome(userPrincipal.getId()));
+    public ResponseEntity<HomeResponseDto> getHomeData(
+        @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+
+        HomeResponseDto response = homeService.getHome(userPrincipal.getId());
+        return ResponseEntity.ok(response);
     }
 }
