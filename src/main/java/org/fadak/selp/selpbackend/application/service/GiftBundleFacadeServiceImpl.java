@@ -136,18 +136,24 @@ public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
                 .build();
 
         GiftBundle giftBundleEntity = giftBundleRepository.save(giftBundle);
+        log.info("🎁 GiftBundle 저장: {}", giftBundleEntity);
 
 
         // 선물 내역 저장
         List<GiftBundleItem> itemEntities = requestDto.getGiftIds().stream()
                 .map(productId -> {
                     Product product = productRepository.findById(productId)
-                            .orElseThrow(() -> new IllegalArgumentException("상품 없음: " + productId));
+                            .orElseThrow(() -> {
+                                log.error("❌ Product not found: id={}", productId);
+                                return new IllegalArgumentException("상품 없음: " + productId);
+                            });
 
-                    return GiftBundleItem.builder()
+                    GiftBundleItem item = GiftBundleItem.builder()
                             .giftBundle(giftBundleEntity)
                             .product(product)
                             .build();
+                    log.info("🎁 GiftBundleItem 생성: {}", item);
+                    return item;
                 })
                 .collect(Collectors.toList());
 
