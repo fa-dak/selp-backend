@@ -5,7 +5,7 @@ minio:
   url: https://selp-minio.${PROD_DOMAIN}
   access-key: ${MINIO_ACCESS_KEY}
   secret-key: ${MINIO_SECRET_KEY}
-  bucket: dev # 향후 mysql과 함께 prod로 바꿀 예정
+  bucket: prod # 향후 mysql과 함께 prod로 바꿀 예정
   region: ap-northeast-2
   presign:
     expiration-seconds: ${PROD_PRESIGNED_URL_SECONDS}   # 6시간 = 6*3600
