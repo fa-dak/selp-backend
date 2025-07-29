@@ -1,9 +1,7 @@
 package org.fadak.selp.selpbackend.application.service;
 
 import lombok.RequiredArgsConstructor;
-import org.fadak.selp.selpbackend.domain.dto.response.EventPreviewDto;
-import org.fadak.selp.selpbackend.domain.dto.response.HomeResponseDto;
-import org.fadak.selp.selpbackend.domain.dto.response.ProductPreviewDto;
+import org.fadak.selp.selpbackend.domain.dto.response.*;
 import org.fadak.selp.selpbackend.domain.entity.Event;
 import org.fadak.selp.selpbackend.domain.entity.GiftBundle;
 import org.fadak.selp.selpbackend.domain.entity.Product;
@@ -14,8 +12,8 @@ import org.fadak.selp.selpbackend.domain.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -42,17 +40,24 @@ public class HomeServiceImpl implements HomeService{
                 .toList();
 
         // 3. 최근 선물꾸러미
-        GiftBundle recentBundle = giftBundleRepository.findTopByMemberIdOrderByCreatedDateDesc(memberId)
+        GiftBundle giftBundle = giftBundleRepository.findTopByMemberIdOrderByCreatedDateDesc(memberId)
                 .orElse(null);
 
-        List<ProductPreviewDto> recentBundleProductDtos = new ArrayList<>();
-        if (recentBundle != null) {
-            List<Product> bundleProducts = giftBundleItemRepository.findAllProductsByBundleId(recentBundle.getId());
-            recentBundleProductDtos = bundleProducts.stream()
-                    .map(ProductPreviewDto::from)
-                    .toList();
+        GiftBundleResponseDto giftBundleResponseDto = null;
+        if (giftBundle != null) {
+            giftBundleResponseDto = convertToDto(giftBundle);
         }
 
-        return HomeResponseDto.of(eventDtos, productDtos, recentBundleProductDtos);
+        return HomeResponseDto.of(eventDtos, productDtos, giftBundleResponseDto);
+    }
+
+    private GiftBundleResponseDto convertToDto(GiftBundle giftBundle) {
+        // ProductDto 리스트 생성
+        List<GiftBundleResponseDto.ProductDto> productDtos = giftBundle.getGiftBundleItems().stream()
+                .map(item -> GiftBundleResponseDto.ProductDto.from(item.getProduct()))
+                .collect(Collectors.toList());
+
+        // 최종 DTO 조립
+        return GiftBundleResponseDto.from(giftBundle, productDtos);
     }
 }
