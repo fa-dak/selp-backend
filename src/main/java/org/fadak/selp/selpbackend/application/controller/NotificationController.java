@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.fadak.selp.selpbackend.application.service.NotificationService;
 import org.fadak.selp.selpbackend.domain.auth.UserPrincipal;
 import org.fadak.selp.selpbackend.domain.dto.request.NotificationRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.response.NotificationFindResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -20,8 +20,8 @@ public class NotificationController {
 
     @PostMapping
     public ResponseEntity<?> registerNotification(
-        @AuthenticationPrincipal UserPrincipal userPrincipal,
-        @RequestBody NotificationRequestDto dto
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody NotificationRequestDto dto
     ) {
 
         long loginMemberId = userPrincipal.getId();
@@ -31,11 +31,17 @@ public class NotificationController {
 
     @PostMapping("/send")
     public ResponseEntity<?> sendNotifications(
-        @AuthenticationPrincipal UserPrincipal userPrincipal
+            @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
 
         long loginMemberId = userPrincipal.getId();
         notificationService.sendScheduledNotifications();
         return ResponseEntity.ok().body("전송 완료");
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getNotifications(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        List<NotificationFindResponseDto> result = notificationService.findAllNotifications(userPrincipal.getId());
+        return ResponseEntity.ok(result);
     }
 }
