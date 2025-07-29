@@ -85,39 +85,21 @@ public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
     @Transactional
     public void registerGiftBundle(GiftBundleSaveRequestDto requestDto, Long memberId) {
 
-        log.info("=== 꾸러미 저장 시작 ===");
-        log.info("memberId: {}", memberId);
-        log.info("requestDto: {}", requestDto.toString());
-
-//        Member member = memberRepository.findById(memberId)
-//                .orElseThrow(IllegalArgumentException::new);
-
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> {
-                    log.error("❌ Member not found: id={}", memberId);
-                    return new IllegalArgumentException("회원 없음");
-                });
-
-        log.info("✅ Member: {}", member.toString());
+                .orElseThrow(IllegalArgumentException::new);
 
         ReceiverInfo receiverInfo = requestDto.toReceiverInfo(member);
-        log.info("📦 ReceiverInfo(before save): {}", receiverInfo);
 
         ReceiverInfo receiverInfoEntity = receiverInfoRepository.save(receiverInfo); // 주변인 정보 저장
-        log.info("📦 ReceiverInfo(after save): {}", receiverInfoEntity);
 
         Event event = requestDto.toEvent(receiverInfoEntity);
-        log.info("📅 Event(before save): {}", event);
 
         Event eventEntity = eventRepository.save(event); // 이벤트 저장
-        log.info("📅 Event(after save): {}", eventEntity);
 
         // 주변인 선호 저장
         List<String> categories = requestDto.getCategories();
-        log.info("📁 카테고리 요청: {}", categories);
 
         List<ProductCategory> productCategories = productCategoryRepository.findByNameIn(categories);
-        log.info("📁 매핑된 카테고리: {}", productCategories);
 
         List<Preference> preferences = productCategories.stream()
                 .map(category -> Preference.builder()
@@ -136,24 +118,18 @@ public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
                 .build();
 
         GiftBundle giftBundleEntity = giftBundleRepository.save(giftBundle);
-        log.info("🎁 GiftBundle 저장: {}", giftBundleEntity);
 
 
         // 선물 내역 저장
         List<GiftBundleItem> itemEntities = requestDto.getGiftIds().stream()
                 .map(productId -> {
                     Product product = productRepository.findById(productId)
-                            .orElseThrow(() -> {
-                                log.error("❌ Product not found: id={}", productId);
-                                return new IllegalArgumentException("상품 없음: " + productId);
-                            });
+                            .orElseThrow(() -> new IllegalArgumentException("상품 없음: " + productId));
 
-                    GiftBundleItem item = GiftBundleItem.builder()
+                    return GiftBundleItem.builder()
                             .giftBundle(giftBundleEntity)
                             .product(product)
                             .build();
-                    log.info("🎁 GiftBundleItem 생성: {}", item);
-                    return item;
                 })
                 .collect(Collectors.toList());
 
