@@ -6,7 +6,6 @@ import org.fadak.selp.selpbackend.domain.entity.Event;
 import org.fadak.selp.selpbackend.domain.entity.GiftBundle;
 import org.fadak.selp.selpbackend.domain.entity.Product;
 import org.fadak.selp.selpbackend.domain.repository.EventRepository;
-import org.fadak.selp.selpbackend.domain.repository.GiftBundleItemRepository;
 import org.fadak.selp.selpbackend.domain.repository.GiftBundleRepository;
 import org.fadak.selp.selpbackend.domain.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,6 @@ public class HomeServiceImpl implements HomeService{
     private final EventRepository eventRepository;
     private final ProductRepository productRepository;
     private final GiftBundleRepository giftBundleRepository;
-    private final GiftBundleItemRepository giftBundleItemRepository;
 
     @Override
     public HomeResponseDto getHome(Long memberId) {
