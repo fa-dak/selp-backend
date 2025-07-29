@@ -11,16 +11,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Getter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "MEMBER")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Member extends BaseEntity {
 
     @Id
@@ -39,6 +40,7 @@ public class Member extends BaseEntity {
 
     @Builder
     public Member(String email, String nickname, String provider) {
+
         this.email = email;
         this.nickname = nickname;
         this.provider = provider;

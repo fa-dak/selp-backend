@@ -16,12 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/oauth")
 public class OAuthController {
+
     private final OAuthService oAuthService;
 
     @PostMapping("/kakao")
-    public ResponseEntity<LoginResponseDto> loginWithKakao(@RequestBody KakaoLoginRequestDto kakaoLoginRequestDto) {
-        log.info("카카오 로그인 요청이 들어왔습니다. 인가 코드: {}", kakaoLoginRequestDto.getAccessToken());
-        LoginResponseDto responseDto = oAuthService.loginWithKakao(kakaoLoginRequestDto);
+    public ResponseEntity<LoginResponseDto> loginWithKakao(
+        @RequestBody KakaoLoginRequestDto request
+    ) {
+
+        log.info("카카오 로그인 요청이 들어왔습니다. 인가 코드: {}", request.getAccessToken());
+        LoginResponseDto responseDto = oAuthService.loginWithKakao(request);
         return ResponseEntity.ok(responseDto);
     }
 }

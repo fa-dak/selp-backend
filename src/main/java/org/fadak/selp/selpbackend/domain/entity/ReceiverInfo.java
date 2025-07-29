@@ -13,17 +13,20 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.fadak.selp.selpbackend.domain.dto.request.ReceiverModifyRequestDto;
 
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Getter
 @Entity
-@Table(name = "RECEIVER_INFO")
 @NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "RECEIVER_INFO")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class ReceiverInfo extends BaseEntity {
 
     @Id
@@ -39,7 +42,7 @@ public class ReceiverInfo extends BaseEntity {
     private String nickname;
 
     @Column(name = "AGE")
-    private Integer age;
+    private int age;
 
     @Column(name = "GENDER")
     private String gender = "NONE";
@@ -53,38 +56,35 @@ public class ReceiverInfo extends BaseEntity {
     // [회사] 회사 동료, 회사 상사, 회사 동기
     // 기타
 
-    @Column(name = "PREFERENCES") // 취향
-    private String preferences;
-
     @Column(name = "DETAIL") // 세부 사항
     private String detail;
 
+    @OneToMany(mappedBy = "receiverInfo", fetch = FetchType.LAZY)
+    private List<Preference> preferences;
+
     @Builder
-    public ReceiverInfo(Member member, String nickname, Integer age, String gender,
-        String relationship, String preferences, String detail) {
+    public ReceiverInfo(Member member, String nickname, int age, String gender,
+        String relationship, String detail, List<Preference> preferences) {
 
         this.member = member;
         this.nickname = nickname;
         this.age = age;
-        this.gender = gender != null ? gender : "NONE";
+        this.gender = gender;
         this.relationship = relationship;
-        this.preferences = preferences;
         this.detail = detail;
+        this.preferences = preferences;
     }
 
-    public void update(ReceiverModifyRequestDto request) {
-        // TODO: 유효성 검사는 컨트롤러단 @Valid로 하기
-        this.nickname = request.getNickname() != null && !request.getNickname().isEmpty()
-            ? request.getNickname() : this.nickname;
-        this.age = request.getAge();
-        this.gender = request.getGender() != null && !request.getGender().isEmpty()
-            ? request.getGender() : this.gender;
-        this.relationship =
-            request.getRelationship() != null && !request.getRelationship().isEmpty()
-                ? request.getRelationship() : this.relationship;
-        this.preferences = request.getPreferences() != null && !request.getPreferences().isEmpty()
-            ? request.getPreferences() : this.preferences;
-        this.detail = request.getDetail() != null && !request.getDetail().isEmpty()
-            ? request.getDetail() : this.detail;
+    public void update(String nickname, int age, String gender,
+        String relationship, String detail, List<Preference> preferences) {
+
+        this.nickname = nickname;
+        this.age = age;
+        this.gender = gender;
+        this.relationship = relationship;
+        if (detail != null) {
+            this.detail = detail;
+        }
+        this.preferences = preferences;
     }
 }

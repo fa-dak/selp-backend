@@ -4,12 +4,23 @@
 
 package org.fadak.selp.selpbackend.domain.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.fadak.selp.selpbackend.domain.constant.ProductCategory;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "PRODUCT")
 public class Product extends BaseEntity {
 
@@ -18,8 +29,8 @@ public class Product extends BaseEntity {
     @Column(name = "PRODUCT_ID")
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "CATEGORY")
+    @JoinColumn(name = "PRODUCT_CATEGORY_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
     private ProductCategory category;
 
     @Column(name = "NAME")

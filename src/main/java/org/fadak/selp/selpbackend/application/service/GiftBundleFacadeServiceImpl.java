@@ -3,13 +3,19 @@ package org.fadak.selp.selpbackend.application.service;
 import lombok.RequiredArgsConstructor;
 import org.fadak.selp.selpbackend.application.util.OpenAiBuilderUtil;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleRecommendRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleSaveFromCalendarRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleSaveRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftRecommendAgainRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.response.GiftBundleItemResponseDto;
+import org.fadak.selp.selpbackend.domain.entity.*;
+import org.fadak.selp.selpbackend.domain.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -18,6 +24,15 @@ public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
 
     private final CategoryInferenceService categoryInferenceService;
     private final ElasticEmbeddingSearchService embeddingSearcher;
+
+    private final MemberRepository memberRepository;
+    private final ProductCategoryRepository productCategoryRepository;
+    private final EventRepository eventRepository;
+    private final ReceiverInfoRepository receiverInfoRepository;
+    private final GiftBundleRepository giftBundleRepository;
+    private final GiftBundleItemRepository giftBundleItemRepository;
+    private final ProductRepository productRepository;
+    private final PreferenceRepository preferenceRepository;
 
     @Override
     public List<GiftBundleItemResponseDto> recommendGiftBundle(GiftBundleRecommendRequestDto requestDto) {
@@ -70,5 +85,90 @@ public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
                 .imagePath((String) searchResult.get("image_path"))
                 .detailPath((String) searchResult.get("detail_path"))
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void registerGiftBundle(GiftBundleSaveRequestDto requestDto, Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(IllegalArgumentException::new);
+
+
+        ReceiverInfo receiverInfo = requestDto.toReceiverInfo(member);
+        ReceiverInfo receiverInfoEntity = receiverInfoRepository.save(receiverInfo); // 주변인 정보 저장
+
+        Event event = requestDto.toEvent(receiverInfoEntity);
+        Event eventEntity = eventRepository.save(event); // 이벤트 저장
+
+        // 주변인 선호 저장
+        List<String> categories = requestDto.getCategories();
+        List<ProductCategory> productCategories = productCategoryRepository.findByNameIn(categories);
+
+        List<Preference> preferences = productCategories.stream()
+                .map(category -> Preference.builder()
+                        .receiverInfo(receiverInfoEntity)       // 이미 저장된 ReceiverInfo
+                        .category(category)
+                        .build())
+                .toList();
+
+        preferenceRepository.saveAll(preferences);
+
+
+        // 꾸러미 저장
+        GiftBundle giftBundle = GiftBundle.builder()
+                .event(eventEntity)
+                .member(member)
+                .build();
+
+        GiftBundle giftBundleEntity = giftBundleRepository.save(giftBundle);
+
+
+        // 선물 내역 저장
+        List<GiftBundleItem> itemEntities = requestDto.getGiftIds().stream()
+                .map(productId -> {
+                    Product product = productRepository.findById(productId)
+                            .orElseThrow(() -> new IllegalArgumentException("상품 없음: " + productId));
+
+                    return GiftBundleItem.builder()
+                            .giftBundle(giftBundleEntity)
+                            .product(product)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        giftBundleItemRepository.saveAll(itemEntities);
+    }
+
+    @Override
+    @Transactional
+    public void registerGiftBundleFromCalendar(GiftBundleSaveFromCalendarRequestDto requestDto, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(IllegalArgumentException::new);
+
+        Event event = eventRepository.findById(requestDto.getEventId())
+                .orElseThrow(IllegalArgumentException::new);
+
+        GiftBundle giftBundle = GiftBundle.builder()
+                .event(event)
+                .member(member)
+                .build();
+
+        GiftBundle giftBundleEntity = giftBundleRepository.save(giftBundle);
+
+        // 선물 내역 저장
+        List<GiftBundleItem> itemEntities = requestDto.getGiftIds().stream()
+                .map(productId -> {
+                    Product product = productRepository.findById(productId)
+                            .orElseThrow(() -> new IllegalArgumentException("상품 없음: " + productId));
+
+                    return GiftBundleItem.builder()
+                            .giftBundle(giftBundleEntity)
+                            .product(product)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        giftBundleItemRepository.saveAll(itemEntities);
     }
 }

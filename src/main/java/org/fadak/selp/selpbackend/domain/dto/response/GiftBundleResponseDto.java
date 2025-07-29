@@ -2,7 +2,6 @@ package org.fadak.selp.selpbackend.domain.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.fadak.selp.selpbackend.domain.constant.ProductCategory;
 import org.fadak.selp.selpbackend.domain.entity.Event;
 import org.fadak.selp.selpbackend.domain.entity.GiftBundle;
 import org.fadak.selp.selpbackend.domain.entity.Product;
@@ -54,7 +53,7 @@ public class GiftBundleResponseDto {
     @Builder
     public static class ProductDto {
         private final Long productId;
-        private final ProductCategory category;
+        private final String category;
         private final String name;
         private final Long price;
         private final String imagePath;
@@ -63,7 +62,6 @@ public class GiftBundleResponseDto {
         public static ProductDto from(Product product) {
             return ProductDto.builder()
                     .productId(product.getId())
-                    .category(product.getCategory())
                     .name(product.getName())
                     .price(product.getPrice())
                     .imagePath(product.getImagePath())
