@@ -5,18 +5,28 @@
 package org.fadak.selp.selpbackend.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
 @Entity
-@Table(name = "RECEIVER_INFO")
 @NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "RECEIVER_INFO")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class ReceiverInfo extends BaseEntity {
 
     @Id
@@ -54,7 +64,7 @@ public class ReceiverInfo extends BaseEntity {
 
     @Builder
     public ReceiverInfo(Member member, String nickname, int age, String gender,
-                        String relationship, String detail, List<Preference> preferences) {
+        String relationship, String detail, List<Preference> preferences) {
 
         this.member = member;
         this.nickname = nickname;
@@ -66,7 +76,7 @@ public class ReceiverInfo extends BaseEntity {
     }
 
     public void update(String nickname, int age, String gender,
-                       String relationship, String detail, List<Preference> preferences) {
+        String relationship, String detail, List<Preference> preferences) {
 
         this.nickname = nickname;
         this.age = age;
