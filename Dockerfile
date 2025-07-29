@@ -1,6 +1,8 @@
 # Java 21 JRE 기반, 경량 Alpine
 FROM eclipse-temurin:21-jre-alpine
 
+RUN apk add --no-cache curl
+
 # ca-certificates 설치 (Alpine은 기본 미포함)
 RUN apk add --no-cache ca-certificates
 
