@@ -24,9 +24,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Optional<Event> findById(Long id);
 
-    @Query("SELECT e FROM Event e WHERE e.receiverInfo.member.id = :memberId AND e.eventDate >= :today ORDER BY e.eventDate ASC")
+    @Query("SELECT e FROM Event e WHERE e.receiverInfo.member.id = :memberId AND e.eventDate > :today ORDER BY e.eventDate ASC")
     List<Event> findTop5UpcomingEvents(@Param("memberId") Long memberId, @Param("today") LocalDate today);
-
-//    @Query("SELECT e FROM Event e WHERE  e.eventDate >= :today ORDER BY e.eventDate ASC")
-//    List<Event> findTop5UpcomingEvents( @Param("today") LocalDate today);
+    ;
 }
