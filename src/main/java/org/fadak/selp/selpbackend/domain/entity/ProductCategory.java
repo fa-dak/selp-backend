@@ -1,11 +1,6 @@
 package org.fadak.selp.selpbackend.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +17,7 @@ public class ProductCategory extends BaseEntity {
     @Column(name = "PRODUCT_CATEGORY_ID")
     private Long id;
 
-    @Column(name = "CATEFORY_NAME")
+    @Column(name = "CATEGORY_NAME")
     private String name;
 }
 

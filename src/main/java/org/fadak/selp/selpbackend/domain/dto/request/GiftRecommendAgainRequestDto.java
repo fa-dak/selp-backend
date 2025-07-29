@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GiftRecommendAgainRequestDto {
     private Long productId;
-    private String ageRange;
+    private int ageRange;
     private String anniversaryType;
     private String category;
     private String relation;
