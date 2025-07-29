@@ -19,7 +19,7 @@ public class ReceiverModifyRequestDto {
     private String nickname;
 
     @NotBlank(message = "성별은 비어 있을 수 없습니다.")
-    @Pattern(regexp = "^(남자|여자|모두)$", message = "성별은 '남자', '여자', '모두' 중 하나여야 합니다.")
+    @Pattern(regexp = "^(MALE|FEMALE|NONE)$", message = "성별은 'MALE', 'FEMALE', 'NONE' 중 하나여야 합니다.")
     private Gender gender;
 
     @NotBlank(message = "관계는 비어 있을 수 없습니다.")
