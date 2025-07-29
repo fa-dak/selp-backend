@@ -4,10 +4,12 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.fadak.selp.selpbackend.application.service.ReceiverInfoService;
+import org.fadak.selp.selpbackend.domain.auth.UserPrincipal;
 import org.fadak.selp.selpbackend.domain.dto.request.ReceiverModifyRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.ReceiverRegisterRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.response.ReceiverInfoListResponseDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,9 +32,12 @@ public class ReceiverInfoController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<List<ReceiverInfoListResponseDto>> searchReceiverInfoList() {
+    public ResponseEntity<List<ReceiverInfoListResponseDto>> searchReceiverInfoList(
+        @AuthenticationPrincipal UserPrincipal userPrincipal
 
-        long loginMemberId = 1L;
+    ) {
+
+        long loginMemberId = userPrincipal.getId();
         List<ReceiverInfoListResponseDto> receiverInfoList
             = receiverInfoService.getReceiverInfoList(loginMemberId);
 
@@ -41,31 +46,34 @@ public class ReceiverInfoController {
 
     @DeleteMapping("/{receiver-info-id}")
     public ResponseEntity<?> deleteReceiverInfoById(
+        @AuthenticationPrincipal UserPrincipal userPrincipal,
         @PathVariable("receiver-info-id") Long receiverInfoId
     ) {
 
-        long loginMemberId = 1L;
+        long loginMemberId = userPrincipal.getId();
         receiverInfoService.delete(receiverInfoId, loginMemberId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping
     public ResponseEntity<?> registerReceiverInfo(
+        @AuthenticationPrincipal UserPrincipal userPrincipal,
         @Valid @RequestBody ReceiverRegisterRequestDto request
     ) {
 
-        long loginMemberId = 1L;
+        long loginMemberId = userPrincipal.getId();
         receiverInfoService.registerReceiverInfo(request, loginMemberId);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{receiver-info-id}")
     public ResponseEntity<?> modifyReceiverInfo(
+        @AuthenticationPrincipal UserPrincipal userPrincipal,
         @Valid @RequestBody ReceiverModifyRequestDto request,
         @PathVariable("receiver-info-id") Long receiverInfoId
     ) {
 
-        long loginMemberId = 1L;
+        long loginMemberId = userPrincipal.getId();
         receiverInfoService.modifyReceiverInfo(request, receiverInfoId, loginMemberId);
         return ResponseEntity.ok().build();
     }
