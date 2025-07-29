@@ -2,11 +2,13 @@ package org.fadak.selp.selpbackend.application.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.ast.Not;
 import org.fadak.selp.selpbackend.domain.dto.request.NotificationRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.response.NotificationFindResponseDto;
+import org.fadak.selp.selpbackend.domain.entity.Event;
 import org.fadak.selp.selpbackend.domain.entity.FcmToken;
 import org.fadak.selp.selpbackend.domain.entity.Member;
 import org.fadak.selp.selpbackend.domain.entity.Notification;
+import org.fadak.selp.selpbackend.domain.repository.EventRepository;
 import org.fadak.selp.selpbackend.domain.repository.FcmTokenRepository;
 import org.fadak.selp.selpbackend.domain.repository.MemberRepository;
 import org.fadak.selp.selpbackend.domain.repository.NotificationRepository;
@@ -14,10 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
-
-import org.fadak.selp.selpbackend.domain.entity.Event;
-import org.fadak.selp.selpbackend.domain.repository.EventRepository;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -48,13 +48,13 @@ public class NotificationServiceImpl implements NotificationService {
         LocalDate today = LocalDate.now();
         List<Notification> notifications = notificationRepository.findBySendDateAndIsSent(today, false);
 
-        for(Notification notification : notifications) {
+        for (Notification notification : notifications) {
             Long memberId = notification.getMember().getId();
             String token = fcmTokenRepository.findByMemberId(memberId)
                     .map(FcmToken::getToken)
                     .orElse(null);
 
-            if(token == null) {
+            if (token == null) {
                 log.warn("전송 실패: memberId={} → FCM 토큰 없음", memberId);
                 continue;
             }
@@ -64,5 +64,15 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         log.info("FCM 알림 전송 완료: 총 {}건", notifications.size());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<NotificationFindResponseDto> findAllNotifications(Long memberId) {
+        List<Notification> notifications = notificationRepository.findAllByMemberId(memberId);
+        return notifications.stream()
+                .sorted(Comparator.comparing(Notification::getCreatedDate).reversed())
+                .map(NotificationFindResponseDto::from)
+                .toList();
     }
 }
