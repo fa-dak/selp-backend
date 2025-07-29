@@ -40,6 +40,7 @@ public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
 
         // 사용자의 입력 데이터를 바탕으로 카테고리별 금액을 산정
         Map<String, Integer> categoryBudgetMap = categoryInferenceService.distributeBudget(requestDto);
+
         List<GiftBundleItemResponseDto> result = new ArrayList<>();
 
         for (Map.Entry<String, Integer> entry : categoryBudgetMap.entrySet()) {
@@ -48,20 +49,14 @@ public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
 
             String textForEmbedding = OpenAiBuilderUtil.buildEmbeddingPrompt(requestDto, category, budget);
 
-            List<Map<String, Object>> searchResults = embeddingSearcher.searchByUserInput(textForEmbedding, 1, category, budget);
+            Map<String, Object> searchResult = embeddingSearcher.searchMostRelevant(textForEmbedding, category, budget);
 
-            for (Map<String, Object> product : searchResults) {
-                GiftBundleItemResponseDto item = GiftBundleItemResponseDto.builder()
-                        .id(Long.valueOf((String) product.get("product_id")))
-                        .name((String) product.get("name"))
-                        .price(Long.valueOf((Integer) product.get("price")))
-                        .category((String) product.get("category"))
-                        .imagePath((String) product.get("image_path"))
-                        .detailPath((String) product.get("detail_path"))
-                        .build();
+            Long productId = Long.valueOf((String) searchResult.get("product_id"));
 
-                result.add(item);
-            }
+            Product product = productRepository.findById(productId)
+                    .orElseThrow(IllegalArgumentException::new);
+
+            result.add(GiftBundleItemResponseDto.from(product));
         }
 
         return result;
@@ -72,20 +67,18 @@ public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
         GiftBundleRecommendRequestDto dto = requestDto.toGiftBundleRecommendRequestDto();
         String textForEmbedding = OpenAiBuilderUtil.buildEmbeddingPrompt(dto, requestDto.getCategory(), requestDto.getPrice());
 
-        Map<String, Object> searchResult = embeddingSearcher.recommendSimilarProduct(textForEmbedding, 1, requestDto.getCategory(), requestDto.getPrice(), requestDto.getProductId());
+        Map<String, Object> searchResult = embeddingSearcher.recommendSimilarProduct(textForEmbedding, requestDto.getCategory(), requestDto.getPrice(), requestDto.getProductId());
 
         if (searchResult == null) {
             throw new IllegalArgumentException("상품 재추천 오류");
         }
 
-        return GiftBundleItemResponseDto.builder()
-                .id(Long.valueOf((String) searchResult.get("product_id")))
-                .name((String) searchResult.get("name"))
-                .category((String) searchResult.get("category"))
-                .price(Long.valueOf((Integer) searchResult.get("price")))
-                .imagePath((String) searchResult.get("image_path"))
-                .detailPath((String) searchResult.get("detail_path"))
-                .build();
+        Long productId = Long.valueOf((String) searchResult.get("product_id"));
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(IllegalArgumentException::new);
+
+        return GiftBundleItemResponseDto.from(product);
     }
 
     @Override
