@@ -16,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.fadak.selp.selpbackend.domain.entity.Event;
+import org.fadak.selp.selpbackend.domain.repository.EventRepository;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -25,12 +28,17 @@ public class NotificationServiceImpl implements NotificationService {
     private final MemberRepository memberRepository;
     private final FcmTokenRepository fcmTokenRepository;
     private final FcmTokenService fcmTokenService;
+    private final EventRepository eventRepository;
 
     @Override
+    @Transactional
     public void registerNotification(NotificationRequestDto dto) {
         Member member = memberRepository.findById(dto.getMemberId())
-                .orElseThrow(IllegalArgumentException::new);
-        Notification notification = Notification.of(member, dto);
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+        Event event = eventRepository.findById(dto.getEventId())
+                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+
+        Notification notification = Notification.of(member, event, dto);
         notificationRepository.save(notification);
     }
 

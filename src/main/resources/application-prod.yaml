@@ -16,8 +16,8 @@ springdoc:
 
 spring:
   datasource:
-    # db: 잠깐 selp-dev로 수정
-    url: jdbc:mysql://selp-mysql-db:3306/selp-dev?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    # db: selp-prod
+    url: jdbc:mysql://selp-mysql-db:3306/selp-prod?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${PROD_MYSQL_DB_USERNAME}
     password: ${PROD_MYSQL_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver

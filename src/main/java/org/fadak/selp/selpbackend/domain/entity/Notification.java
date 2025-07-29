@@ -14,10 +14,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
 import org.fadak.selp.selpbackend.domain.dto.request.NotificationRequestDto;
 
 @Getter
@@ -26,16 +24,12 @@ import org.fadak.selp.selpbackend.domain.dto.request.NotificationRequestDto;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "NOTIFICATION")
-
 public class Notification extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "NOTIFICATION_ID")
     private Long id;
-
-    @Column(name = "EVENT_ID")
-    private Long eventId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
@@ -56,18 +50,28 @@ public class Notification extends BaseEntity {
     @Column(name = "SEND_DATE")
     private LocalDate sendDate;
 
-    public static Notification of(Member member, NotificationRequestDto dto) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "EVENT_ID")
+    private Event event;
 
-        return new Notification(
-            null,
-            dto.getEventId(),
-            member,
-            dto.getTitle(),
-            dto.getContent(),
-            false,
-            false,
-            dto.getSendDate()
-        );
+    @Builder
+    public Notification(Member member, String title, String content, LocalDate sendDate, Event event) {
+        this.member = member;
+        this.title = title;
+        this.content = content;
+        this.isSent = false;
+        this.isRead = false;
+        this.sendDate = sendDate;
+        this.event = event;
     }
 
+    public static Notification of(Member member, Event event, NotificationRequestDto dto) {
+        return Notification.builder()
+            .member(member)
+            .event(event)
+            .title(dto.getTitle())
+            .content(dto.getContent())
+            .sendDate(dto.getSendDate())
+            .build();
+    }
 }
