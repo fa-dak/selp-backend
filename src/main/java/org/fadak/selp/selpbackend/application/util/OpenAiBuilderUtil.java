@@ -28,7 +28,7 @@ public class OpenAiBuilderUtil {
                 dto.getAgeRange() + "대",
                 dto.getGender().getValue(),
                 dto.getRelation(),
-                dto.getAnniversaryType(),
+                dto.getAnniversaryType().getValue(),
                 dto.getUserMessage(),
                 dto.getCategories()
         );
@@ -40,7 +40,7 @@ public class OpenAiBuilderUtil {
                 requestDto.getAgeRange() + "대",
                 requestDto.getGender().getValue(),
                 requestDto.getRelation(),
-                requestDto.getAnniversaryType(),
+                requestDto.getAnniversaryType().getValue(),
                 category,
                 budget,
                 requestDto.getUserMessage()
