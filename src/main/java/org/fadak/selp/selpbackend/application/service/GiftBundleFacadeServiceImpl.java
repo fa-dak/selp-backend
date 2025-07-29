@@ -1,6 +1,7 @@
 package org.fadak.selp.selpbackend.application.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.fadak.selp.selpbackend.application.util.OpenAiBuilderUtil;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleRecommendRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.GiftBundleSaveFromCalendarRequestDto;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
@@ -90,6 +91,10 @@ public class GiftBundleFacadeServiceImpl implements GiftBundleFacadeService {
     @Override
     @Transactional
     public void registerGiftBundle(GiftBundleSaveRequestDto requestDto, Long memberId) {
+
+        log.info("=== 꾸러미 저장 시작 ===");
+        log.info("memberId: {}", memberId);
+        log.info("requestDto: {}", requestDto);
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(IllegalArgumentException::new);
