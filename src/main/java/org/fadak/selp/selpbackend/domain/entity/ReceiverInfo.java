@@ -5,15 +5,27 @@
 package org.fadak.selp.selpbackend.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,12 +53,6 @@ public class ReceiverInfo extends BaseEntity {
 
     @Column(name = "RELATIONSHIP")
     private String relationship;
-    // ex.
-    // [가족] 엄마, 아빠, 아들, 딸
-    // [친구] 동성 친구, 친한 친구
-    // [애인] 여자친구, 남자친구
-    // [회사] 회사 동료, 회사 상사, 회사 동기
-    // 기타
 
     @Column(name = "DETAIL") // 세부 사항
     private String detail;
@@ -59,7 +65,7 @@ public class ReceiverInfo extends BaseEntity {
 
     @Builder
     public ReceiverInfo(Member member, String nickname, int age, String gender,
-        String relationship, String detail, List<Preference> preferences) {
+        String relationship, String detail) {
 
         this.member = member;
         this.nickname = nickname;
@@ -67,11 +73,10 @@ public class ReceiverInfo extends BaseEntity {
         this.gender = gender;
         this.relationship = relationship;
         this.detail = detail;
-        this.preferences = preferences;
     }
 
     public void update(String nickname, int age, String gender,
-        String relationship, String detail, List<Preference> preferences) {
+        String relationship, String detail) {
 
         this.nickname = nickname;
         this.age = age;
@@ -80,6 +85,14 @@ public class ReceiverInfo extends BaseEntity {
         if (detail != null) {
             this.detail = detail;
         }
-        this.preferences = preferences;
+    }
+
+    public void addPreference(Preference preference) {
+
+        if (this.preferences == null) {
+            this.preferences = new ArrayList<>();
+        }
+        this.preferences.add(preference);
+        preference.setReceiverInfo(this); // 역방향도 설정
     }
 }

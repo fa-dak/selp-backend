@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.fadak.selp.selpbackend.domain.dto.request.ReceiverModifyRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.ReceiverRegisterRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.response.ReceiverInfoListResponseDto;
+import org.fadak.selp.selpbackend.domain.entity.Preference;
 import org.fadak.selp.selpbackend.domain.entity.ReceiverInfo;
 import org.fadak.selp.selpbackend.domain.repository.PreferenceRepository;
 import org.fadak.selp.selpbackend.domain.repository.ReceiverInfoRepository;
@@ -66,15 +67,17 @@ public class ReceiverInfoServiceImpl implements ReceiverInfoService {
             .age(request.getAge())
             .gender(request.getGender())
             .relationship(request.getRelationship())
-            .preferences(request.getPreferenceIds()
-                .stream()
-                .map(
-                    preferenceId -> preferenceRepository.findById(preferenceId)
-                        .orElseThrow(IllegalArgumentException::new)
-                ).toList()
-            )
             .detail(request.getDetail())
             .build();
+
+        request.getPreferenceIds()
+            .forEach(
+                preferenceId -> {
+                    Preference pref = preferenceRepository.findById(preferenceId)
+                        .orElseThrow(IllegalArgumentException::new);
+                    receiverInfo.addPreference(pref);
+                }
+            );
 
         repository.save(receiverInfo);
     }
@@ -95,14 +98,17 @@ public class ReceiverInfoServiceImpl implements ReceiverInfoService {
             request.getAge(),
             request.getGender(),
             request.getRelationship(),
-            request.getDetail(),
-            request.getPreferenceIds()
-                .stream()
-                .map(
-                    preferenceId -> preferenceRepository.findById(preferenceId)
-                        .orElseThrow(IllegalArgumentException::new)
-                ).toList()
+            request.getDetail()
         );
+
+        request.getPreferenceIds()
+            .forEach(
+                preferenceId -> {
+                    Preference pref = preferenceRepository.findById(preferenceId)
+                        .orElseThrow(IllegalArgumentException::new);
+                    receiverInfo.addPreference(pref);
+                }
+            );
 
         repository.save(receiverInfo);
     }
@@ -116,6 +122,7 @@ public class ReceiverInfoServiceImpl implements ReceiverInfoService {
 
     @Override
     public ReceiverInfoListResponseDto getReceiverInfoDetail(long receiverInfoId, long memberId) {
+
         ReceiverInfo receiverInfo = repository.findByIdAndMember_Id(receiverInfoId, memberId)
             .orElseThrow(() -> new IllegalArgumentException("Receiver not found"));
 
