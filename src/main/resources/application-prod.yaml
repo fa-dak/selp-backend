@@ -41,7 +41,7 @@ spring:
   jpa:
     hibernate:
       # 처음에는 update, 배포 전에는 validate 또는 none 권장
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: false # SQL 로그 출력 여부
     properties:
       hibernate:
