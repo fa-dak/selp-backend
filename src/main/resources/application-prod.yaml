@@ -5,7 +5,7 @@ minio:
   url: https://selp-minio.${PROD_DOMAIN}
   access-key: ${MINIO_ACCESS_KEY}
   secret-key: ${MINIO_SECRET_KEY}
-  bucket: dev # 향후 mysql과 함께 prod로 바꿀 예정
+  bucket: prod # 향후 mysql과 함께 prod로 바꿀 예정
   region: ap-northeast-2
   presign:
     expiration-seconds: ${PROD_PRESIGNED_URL_SECONDS}   # 6시간 = 6*3600
@@ -16,8 +16,8 @@ springdoc:
 
 spring:
   datasource:
-    # db: 잠깐 selp-dev로 수정
-    url: jdbc:mysql://selp-mysql-db:3306/selp-dev?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    # db: selp-prod
+    url: jdbc:mysql://selp-mysql-db:3306/selp-prod?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${PROD_MYSQL_DB_USERNAME}
     password: ${PROD_MYSQL_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver

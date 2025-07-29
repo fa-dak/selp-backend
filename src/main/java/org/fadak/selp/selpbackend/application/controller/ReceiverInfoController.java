@@ -29,12 +29,12 @@ public class ReceiverInfoController {
     /**
      * 받는 사람 목록 조회/검색
      *
-     * @return
+     * @param userPrincipal 현재 로그인한 사용자 정보
+     * @return 주변인 정보 리스트
      */
     @GetMapping
-    public ResponseEntity<List<ReceiverInfoListResponseDto>> searchReceiverInfoList(
+    public ResponseEntity<List<ReceiverInfoListResponseDto>> getMyReceiverInfoList(
         @AuthenticationPrincipal UserPrincipal userPrincipal
-
     ) {
 
         long loginMemberId = userPrincipal.getId();
@@ -42,6 +42,15 @@ public class ReceiverInfoController {
             = receiverInfoService.getReceiverInfoList(loginMemberId);
 
         return ResponseEntity.ok(receiverInfoList);
+    }
+
+    @GetMapping("/{receiver-info-id}")
+    public ResponseEntity<ReceiverInfoListResponseDto> getMyReceiverInfoDetail(
+        @PathVariable("receiver-info-id") Long receiverInfoId,
+        @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+        ReceiverInfoListResponseDto receiverInfoDetail = receiverInfoService.getReceiverInfoDetail(receiverInfoId, userPrincipal.getId());
+        return ResponseEntity.ok(receiverInfoDetail);
     }
 
     @DeleteMapping("/{receiver-info-id}")

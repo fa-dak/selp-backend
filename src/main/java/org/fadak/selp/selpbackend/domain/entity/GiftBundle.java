@@ -2,16 +2,8 @@ package org.fadak.selp.selpbackend.domain.entity; /**
  * @담당자: 원승현, 이지연
  */
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -39,7 +31,7 @@ public class GiftBundle extends BaseEntity {
     @JoinColumn(name = "EVENT_ID")
     private Event event;
 
-    @OneToMany(mappedBy = "giftBundle")
+    @OneToMany(mappedBy = "giftBundle", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<GiftBundleItem> giftBundleItems = new ArrayList<>();
 
     @Builder

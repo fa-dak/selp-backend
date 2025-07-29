@@ -10,6 +10,8 @@ public interface ReceiverInfoService {
 
     List<ReceiverInfoListResponseDto> getReceiverInfoList(long memberId);
 
+    ReceiverInfoListResponseDto getReceiverInfoDetail(long receiverInfoId, long memberId);
+
     void delete(long receiverInfoId, long loginMemberId);
 
     void registerReceiverInfo(ReceiverRegisterRequestDto request, long loginMemberId);
