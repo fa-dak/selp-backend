@@ -26,6 +26,9 @@ public class ProductCategory extends BaseEntity {
 
     @Column(name = "CATEGORY_NAME")
     private String name;
+
+    @Column(name = "CATEGORY_NAME_KR")
+    private String nameKR;
 }
 
 //BEAUTY("beauty"),
