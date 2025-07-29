@@ -1,7 +1,10 @@
 package org.fadak.selp.selpbackend.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.fadak.selp.selpbackend.domain.dto.request.PortOneCancelRequest;
 import org.fadak.selp.selpbackend.domain.dto.request.PortOneTokenRequest;
+import org.fadak.selp.selpbackend.domain.dto.response.PortOnePaymentCancelRawResponse;
+import org.fadak.selp.selpbackend.domain.dto.response.PortOnePaymentCancelResponse;
 import org.fadak.selp.selpbackend.domain.dto.response.PortOnePaymentRawResponse;
 import org.fadak.selp.selpbackend.domain.dto.response.PortOnePaymentVerifyResponse;
 import org.fadak.selp.selpbackend.domain.dto.response.PortOneTokenResponse;
@@ -9,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -47,6 +51,35 @@ public class PortOneServiceImpl implements PortOneService {
         if (body == null || body.code() != 0 || body.response() == null) {
             throw new IllegalStateException(
                 "결제 정보 조회 실패: " + (body != null ? body.message() : "응답 없음"));
+        }
+
+        return body.response();
+    }
+
+    @Override
+    public PortOnePaymentCancelResponse cancel(String impUid, int amount) {
+
+        String token = getPortOneAccessToken();
+        String url = "https://api.iamport.kr/payments/cancel";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        PortOneCancelRequest cancelRequest = new PortOneCancelRequest(impUid, amount);
+        HttpEntity<PortOneCancelRequest> requestEntity = new HttpEntity<>(cancelRequest, headers);
+
+        ResponseEntity<PortOnePaymentCancelRawResponse> response = restTemplate.exchange(
+            url,
+            HttpMethod.POST,
+            requestEntity,
+            PortOnePaymentCancelRawResponse.class
+        );
+
+        PortOnePaymentCancelRawResponse body = response.getBody();
+        if (body == null || body.code() != 0 || body.response() == null) {
+            throw new IllegalStateException(
+                "결제 취소 실패: " + (body != null ? body.message() : "응답 없음"));
         }
 
         return body.response();

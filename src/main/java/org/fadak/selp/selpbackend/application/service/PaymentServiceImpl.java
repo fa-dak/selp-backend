@@ -2,6 +2,7 @@ package org.fadak.selp.selpbackend.application.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.fadak.selp.selpbackend.domain.constant.PayStatus;
 import org.fadak.selp.selpbackend.domain.dto.request.PayRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.response.PortOnePaymentVerifyResponse;
 import org.fadak.selp.selpbackend.domain.entity.GiftBundle;
@@ -44,7 +45,28 @@ public class PaymentServiceImpl implements PaymentService {
             .giftBundle(giftBundle)
             .impUid(response.getImpUid())
             .amount(response.getAmount())
+            .status(PayStatus.PAID)
             .build();
         paymentRepository.save(payment);
+    }
+
+    @Override
+    @Transactional
+    public void cancelGiftBundle(long loginMemberId, Long giftBundleId) {
+
+        // 상품 꾸러미 가져오기
+        GiftBundle giftBundle = giftBundleService.searchById(giftBundleId, loginMemberId);
+        log.info("Gift Bundle: {}", giftBundle);
+
+        // TODO: 상품 꾸러미 결제 상태 취소로 변경하기
+
+        // 결제 정보 가져오기
+        Payment payment = paymentRepository.findByGiftBundleAndStatus(giftBundle, PayStatus.PAID)
+            .orElseThrow(() -> new IllegalArgumentException("해당 상품 꾸러미가 결제 완료된 결제 정보가 없습니다."));
+        log.info("Payment: {}", payment);
+
+        // Iamport에 결제 취소 요청
+        portOneService.cancel(payment.getImpUid(), payment.getAmount());
+
     }
 }
