@@ -26,7 +26,7 @@ public class OpenAiBuilderUtil {
                 """.formatted(
                 dto.getBudget(),
                 dto.getAgeRange() + "대",
-                dto.getGender(),
+                dto.getGender().getValue(),
                 dto.getRelation(),
                 dto.getAnniversaryType(),
                 dto.getUserMessage(),
@@ -38,7 +38,7 @@ public class OpenAiBuilderUtil {
         return String.format(
                 "나이대: %s, 성별: %s, 관계: %s, 기념일: %s, 카테고리: %s, 예산: %d원, 요구사항: '%s'",
                 requestDto.getAgeRange() + "대",
-                requestDto.getGender(),
+                requestDto.getGender().getValue(),
                 requestDto.getRelation(),
                 requestDto.getAnniversaryType(),
                 category,
