@@ -8,7 +8,9 @@ logging:
 #mybatis:
 #  mapper-locations: classpath:mapper/**/*.xml
 #  type-aliases-package: org.fadak.selp.selpbackend.domain.dto
-
+iamport:
+  key: ${IAMPORT_KEY}
+  secret: ${IAMPORT_SECRET}
 
 springdoc:
   swagger-ui:
