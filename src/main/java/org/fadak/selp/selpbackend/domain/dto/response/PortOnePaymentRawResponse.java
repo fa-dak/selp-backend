@@ -1,7 +1,7 @@
 package org.fadak.selp.selpbackend.domain.dto.response;
 
 public record PortOnePaymentRawResponse(
-    int code,
+    Integer code,
     String message,
     PortOnePaymentVerifyResponse response
 ) {
