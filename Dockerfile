@@ -1,6 +1,12 @@
 # Java 21 JRE 기반, 경량 Alpine
 FROM eclipse-temurin:21-jre-alpine
 
+# 인증서 복사
+COPY http_ca.crt /usr/local/share/ca-certificates/http_ca.crt
+
+# 인증서 등록
+RUN update-ca-certificates
+
 # 작업 디렉토리
 WORKDIR /app
 

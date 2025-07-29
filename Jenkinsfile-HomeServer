@@ -17,6 +17,15 @@ pipeline {
             }
         }
 
+        stage('Copy Certificate file') {
+            steps {
+                sh '''
+                # 🔹 Dockerfile과 같은 디렉토리에 위치하게
+                docker cp selp-es:/usr/share/elasticsearch/config/certs/http_ca.crt ${WORKSPACE}/http_ca.crt
+                '''
+            }
+        }
+
         stage('Build') {
             steps {
 		            sh '''
@@ -24,6 +33,8 @@ pipeline {
                 '''
             }
         }
+
+
 
         stage('Build Docker Image') {
             steps {
