@@ -1,5 +1,8 @@
 package org.fadak.selp.selpbackend.application.service;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.fadak.selp.selpbackend.application.util.GptUtil;
@@ -16,10 +19,6 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -34,22 +33,22 @@ public class MessageServiceImpl implements MessageService {
     public MessageResponse recommendMessage(Long bundleId, String tone) throws MessageException {
         // 1. giftBundle → event
         GiftBundle giftBundle = giftBundleRepo.findById(bundleId)
-                .orElseThrow(() -> new MessageException("선물꾸러미 없음"));
+            .orElseThrow(() -> new MessageException("선물꾸러미 없음"));
         Event event = eventRepo.findById(giftBundle.getEvent().getId())
-                .orElseThrow(() -> new MessageException("기념일 없음"));
+            .orElseThrow(() -> new MessageException("기념일 없음"));
 
         // 2. event → receiver
         ReceiverInfo receiver = receiverRepo.findById(event.getReceiverInfo().getId())
-                .orElseThrow(() -> new MessageException("받는 사람 정보 없음"));
+            .orElseThrow(() -> new MessageException("받는 사람 정보 없음"));
 
         // 3. context 구성
         MessageContext context = MessageContext.builder()
-                .style(tone)
-                .gender(receiver.getGender())
-                .age(receiver.getAge())
-                .relationship(receiver.getRelationship())
-                .occasion(event.getEventType())
-                .build();
+            .style(tone)
+            .gender(receiver.getGender())
+            .age(receiver.getAge())
+            .relationship(receiver.getRelationship())
+            .occasion(event.getEventType().name())
+            .build();
 
         String promptText = GptUtil.buildMessagePrompt(context);
         log.info("prompt:: " + promptText);
@@ -58,9 +57,9 @@ public class MessageServiceImpl implements MessageService {
         log.info("response:: {}", generation);
 
         List<String> messages = Arrays.stream(generation.split("\n"))
-                .map(line -> line.replaceAll("^\\d+\\.\\s*", ""))
-                .filter(StringUtils::hasText)
-                .collect(Collectors.toList());
+            .map(line -> line.replaceAll("^\\d+\\.\\s*", ""))
+            .filter(StringUtils::hasText)
+            .collect(Collectors.toList());
 
         return new MessageResponse(messages);
     }

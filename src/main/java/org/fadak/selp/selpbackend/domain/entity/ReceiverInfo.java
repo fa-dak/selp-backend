@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +25,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.fadak.selp.selpbackend.domain.constant.Gender;
 
 @Getter
 @Setter
@@ -49,7 +52,8 @@ public class ReceiverInfo extends BaseEntity {
     private int age;
 
     @Column(name = "GENDER")
-    private String gender = "NONE";
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @Column(name = "RELATIONSHIP")
     private String relationship;
@@ -64,7 +68,7 @@ public class ReceiverInfo extends BaseEntity {
     private List<Event> events;
 
     @Builder
-    public ReceiverInfo(Member member, String nickname, int age, String gender,
+    public ReceiverInfo(Member member, String nickname, int age, Gender gender,
         String relationship, String detail) {
 
         this.member = member;
@@ -75,7 +79,7 @@ public class ReceiverInfo extends BaseEntity {
         this.detail = detail;
     }
 
-    public void update(String nickname, int age, String gender,
+    public void update(String nickname, int age, Gender gender,
         String relationship, String detail) {
 
         this.nickname = nickname;

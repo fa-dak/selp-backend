@@ -4,11 +4,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
+import org.fadak.selp.selpbackend.domain.constant.Gender;
 
 @Getter
 @Setter // JSON 매핑
@@ -20,7 +20,7 @@ public class ReceiverModifyRequestDto {
 
     @NotBlank(message = "성별은 비어 있을 수 없습니다.")
     @Pattern(regexp = "^(남자|여자|모두)$", message = "성별은 '남자', '여자', '모두' 중 하나여야 합니다.")
-    private String gender;
+    private Gender gender;
 
     @NotBlank(message = "관계는 비어 있을 수 없습니다.")
     private String relationship;

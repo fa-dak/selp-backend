@@ -3,6 +3,7 @@ package org.fadak.selp.selpbackend.domain.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.fadak.selp.selpbackend.domain.constant.EventType;
 
 @Getter
 @Setter // JSON 매핑
@@ -13,7 +14,7 @@ public class EventRegisterRequestDto {
 
     private String eventName;
 
-    private String eventType;
+    private EventType eventType;
 
     private long receiverInfoId;
 

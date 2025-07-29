@@ -4,16 +4,27 @@
 
 package org.fadak.selp.selpbackend.domain.entity;
 
-import jakarta.persistence.*;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.fadak.selp.selpbackend.domain.constant.EventType;
 
 @Getter
 @Setter
@@ -33,7 +44,8 @@ public class Event extends BaseEntity {
     private ReceiverInfo receiverInfo;
 
     @Column(name = "EVENT_TYPE")// TODO: TYPE 로 수정하기
-    private String eventType; // TODO: type 로 수정하기
+    @Enumerated(EnumType.STRING)
+    private EventType eventType; // TODO: type 로 수정하기
 
     @Column(name = "EVENT_NAME")// TODO: NAME 로 수정하기
     private String eventName; // TODO: name 로 수정하기
@@ -53,7 +65,7 @@ public class Event extends BaseEntity {
     @Builder
     public Event(
         ReceiverInfo receiverInfo,
-        String eventType,
+        EventType eventType,
         String eventName,
         LocalDate eventDate,
         Integer notificationDaysBefore
