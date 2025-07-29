@@ -35,21 +35,21 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    public String createAccessToken(Long memberId){
-        return createToken(memberId, accessTokenExpirationMinutes);
+    public String createAccessToken(Long memberId, Map<String, Object> claims){
+        return createToken(memberId, claims, accessTokenExpirationMinutes);
     }
 
     public String createRefreshToken(Long memberId){
-        return createToken(memberId, refreshTokenExpirationMinutes);
+        return createToken(memberId, new HashMap<>(), refreshTokenExpirationMinutes);
     }
 
-    public String createToken(Long memberId, long expirationMinutes){
-        Claims claims = Jwts.claims().subject(memberId.toString()).build();
+    public String createToken(Long memberId, Map<String, Object> claims, long expirationMinutes){
+        Claims jwtClaims = Jwts.claims().subject(memberId.toString()).add(claims).build();
         Date now = new Date();
         Date validity = new Date(now.getTime() + expirationMinutes * 60 * 1000);
 
         return Jwts.builder()
-                .setClaims(claims)
+                .setClaims(jwtClaims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS512, key)
