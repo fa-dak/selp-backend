@@ -65,6 +65,10 @@ public class PaymentServiceImpl implements PaymentService {
             .orElseThrow(() -> new IllegalArgumentException("해당 상품 꾸러미가 결제 완료된 결제 정보가 없습니다."));
         log.info("Payment: {}", payment);
 
+        // 결제 정보 삭제 (TODO: 취소할 건지 지울 건지 선택 맘대루)
+//        payment.setStatus(PayStatus.CANCEL);
+        paymentRepository.delete(payment);
+
         // Iamport에 결제 취소 요청
         portOneService.cancel(payment.getImpUid(), payment.getAmount());
 
