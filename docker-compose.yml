@@ -1,6 +1,6 @@
 services:
   selp-backend:
-    image: harbor.jaeyoung2.duckdns.org/selp/selp-backend:latest
+    image: nginx:/selp/selp-backend:latest
     container_name: selp-backend
     environment:
       - SPRING_PROFILES_ACTIVE=prod
@@ -15,4 +15,6 @@ services:
 
 networks:
   selp_network:
+    external: true
+  harbor_harbor:
     external: true
