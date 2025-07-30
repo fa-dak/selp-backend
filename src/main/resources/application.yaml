@@ -27,6 +27,8 @@ jwt:
 
 
 spring:
+  profiles:
+    active: dev
   application:
     name: selp-backend
   ai:
