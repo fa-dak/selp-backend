@@ -43,6 +43,7 @@ public class EventServiceImpl implements EventService {
                 .eventName(event.getEventName())
                 .eventDate(event.getEventDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .eventType(event.getEventType())
+                    .receiverInfoId(event.getReceiverInfo().getId())
                 .receiverNickname(event.getReceiverInfo().getNickname())
                 .notificationDaysBefore(event.getNotificationDaysBefore())
                 .build())
