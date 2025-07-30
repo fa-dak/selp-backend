@@ -1,6 +1,6 @@
 services:
   selp-backend:
-    image: nginx:8443/selp/selp-backend:latest
+    image: harbor.jaeyoung.store/selp/selp-backend:latest
     container_name: selp-backend
     environment:
       - SPRING_PROFILES_ACTIVE=prod
