@@ -8,7 +8,7 @@ public class OpenAiBuilderUtil {
         return """
                 아래는 선물 구성 조건입니다:
                 - 총 예산: %,d원
-                - 나이대: %s
+                - 연령: %s
                 - 성별: %s
                 - 관계: %s
                 - 기념일: %s
@@ -25,7 +25,7 @@ public class OpenAiBuilderUtil {
                 }
                 """.formatted(
                 dto.getBudget(),
-                dto.getAgeRange() + "대",
+                dto.getAgeRange() + "세",
                 dto.getGender().getValue(),
                 dto.getRelation(),
                 dto.getAnniversaryType().getValue(),
@@ -36,8 +36,8 @@ public class OpenAiBuilderUtil {
 
     public static String buildEmbeddingPrompt(GiftBundleRecommendRequestDto requestDto, String category, int budget) {
         return String.format(
-                "나이대: %s, 성별: %s, 관계: %s, 기념일: %s, 카테고리: %s, 예산: %d원, 요구사항: '%s'",
-                requestDto.getAgeRange() + "대",
+                "%s %s %s를 위한 선물입니다. 기념일은 %s이고, 카테고리는 %s입니다. 예산은 약 %d원이며, 요청사항은 '%s'입니다.",
+                requestDto.getAgeRange() + "세",
                 requestDto.getGender().getValue(),
                 requestDto.getRelation(),
                 requestDto.getAnniversaryType().getValue(),
