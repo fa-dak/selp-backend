@@ -68,7 +68,16 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional(readOnly = true)
+    public int findUnreadNotificationsCount(Long memberId) {
+        return notificationRepository.countUnreadNotifications(memberId);
+    }
+
+    @Override
+    @Transactional
     public List<NotificationFindResponseDto> findAllNotifications(Long memberId) {
+
+        notificationRepository.readAllNotificationByMemberId(memberId);
+
         List<Notification> notifications = notificationRepository.findAllByMemberId(memberId);
         return notifications.stream()
                 .sorted(Comparator.comparing(Notification::getCreatedDate).reversed())

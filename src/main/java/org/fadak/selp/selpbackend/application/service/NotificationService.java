@@ -10,6 +10,8 @@ public interface NotificationService {
 
     void sendScheduledNotifications();
 
+    int findUnreadNotificationsCount(Long memberId);
+
     List<NotificationFindResponseDto> findAllNotifications(Long memberId);
 
 }
