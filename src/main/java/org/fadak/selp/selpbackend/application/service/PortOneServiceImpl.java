@@ -1,6 +1,10 @@
 package org.fadak.selp.selpbackend.application.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.fadak.selp.selpbackend.domain.dto.request.PortOneCancelRequest;
 import org.fadak.selp.selpbackend.domain.dto.request.PortOneTokenRequest;
 import org.fadak.selp.selpbackend.domain.dto.response.PortOnePaymentCancelRawResponse;
@@ -17,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PortOneServiceImpl implements PortOneService {
@@ -33,10 +38,12 @@ public class PortOneServiceImpl implements PortOneService {
     public PortOnePaymentVerifyResponse getPaymentByImpUid(String impUid) {
 
         String token = getPortOneAccessToken();
+        log.info("Access 토큰 발급 완료: {}", token);
         String url = "https://api.iamport.kr/payments/" + impUid;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
@@ -49,7 +56,7 @@ public class PortOneServiceImpl implements PortOneService {
 
         PortOnePaymentRawResponse body = response.getBody();
         if (body == null || body.code() != 0 || body.response() == null) {
-            throw new IllegalStateException(
+            throw new IllegalArgumentException(
                 "결제 정보 조회 실패: " + (body != null ? body.message() : "응답 없음"));
         }
 
@@ -60,6 +67,7 @@ public class PortOneServiceImpl implements PortOneService {
     public PortOnePaymentCancelResponse cancel(String impUid, int amount) {
 
         String token = getPortOneAccessToken();
+        log.info("Access 토큰 발급 완료: {}", token);
         String url = "https://api.iamport.kr/payments/cancel";
 
         HttpHeaders headers = new HttpHeaders();
@@ -78,7 +86,7 @@ public class PortOneServiceImpl implements PortOneService {
 
         PortOnePaymentCancelRawResponse body = response.getBody();
         if (body == null || body.code() != 0 || body.response() == null) {
-            throw new IllegalStateException(
+            throw new IllegalArgumentException(
                 "결제 취소 실패: " + (body != null ? body.message() : "응답 없음"));
         }
 
@@ -89,9 +97,21 @@ public class PortOneServiceImpl implements PortOneService {
 
         String url = "https://api.iamport.kr/users/getToken";
 
-        PortOneTokenRequest requestBody = new PortOneTokenRequest(iamportKey, iamportSecret);
+//        PortOneTokenRequest requestBody = new PortOneTokenRequest(iamportKey, iamportSecret);
+        PortOneTokenRequest requestBody = new PortOneTokenRequest("5107228850842827",
+            "Ji4dDJhzNQaSS2IPGeuv89Y4Pk9Taa10whyV8xXbBTFp1F4GXRvN35Z4LFZKYoD9fkbqQdDNy2PrQipJ");
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            log.info("보낼 JSON: {}",
+                mapper.writeValueAsString(new PortOneTokenRequest(iamportKey, iamportSecret)));
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json");
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 
         HttpEntity<PortOneTokenRequest> requestEntity = new HttpEntity<>(requestBody, headers);
 
@@ -104,7 +124,7 @@ public class PortOneServiceImpl implements PortOneService {
 
         PortOneTokenResponse body = response.getBody();
         if (body == null || body.code() != 0 || body.response() == null) {
-            throw new IllegalStateException(
+            throw new IllegalArgumentException(
                 "액세스 토큰 발급 실패: " + (body != null ? body.message() : "응답 없음"));
         }
 

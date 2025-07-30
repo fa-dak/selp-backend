@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDto> handleAllExceptionError(MessageException ex) {
+    public ResponseEntity<ErrorResponseDto> handleAllExceptionError(Exception ex) {
 
         ErrorResponseDto body = new ErrorResponseDto("UNEXPECTED_ERROR", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
