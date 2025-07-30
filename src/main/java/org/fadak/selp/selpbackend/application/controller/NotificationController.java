@@ -39,6 +39,13 @@ public class NotificationController {
         return ResponseEntity.ok().body("전송 완료");
     }
 
+    @GetMapping("/unread-count")
+    public ResponseEntity<?> unreadNotificationCount(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        int result = notificationService.findUnreadNotificationsCount(userPrincipal.getId());
+        return ResponseEntity.ok(result);
+    }
+
+
     @GetMapping
     public ResponseEntity<?> getNotifications(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         List<NotificationFindResponseDto> result = notificationService.findAllNotifications(userPrincipal.getId());

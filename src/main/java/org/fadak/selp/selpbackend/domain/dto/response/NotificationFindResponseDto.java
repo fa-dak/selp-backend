@@ -15,7 +15,6 @@ public class NotificationFindResponseDto {
     private String title;
     private String content;
     private LocalDateTime createdDate;
-    private Boolean isRead;
 
     public static NotificationFindResponseDto from(Notification notification) {
         return NotificationFindResponseDto
@@ -24,7 +23,6 @@ public class NotificationFindResponseDto {
                 .title(notification.getTitle())
                 .content(notification.getContent())
                 .createdDate(notification.getCreatedDate())
-                .isRead(notification.getIsRead())
                 .build();
     }
 }
