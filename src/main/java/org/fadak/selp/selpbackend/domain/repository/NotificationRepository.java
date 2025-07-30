@@ -11,4 +11,6 @@ import java.util.List;
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     List<Notification> findBySendDateAndIsSent(LocalDate sendDate, Boolean isSent);
 
+    List<Notification> findAllByMemberId(Long memberId);
+
 }
