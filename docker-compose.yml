@@ -1,6 +1,6 @@
 services:
   selp-backend:
-    image: harbor.jaeyoung.store/selp/selp-backend:latest
+    image: harbor.jaeyoung2.duckdns.org/selp/selp-backend:latest
     container_name: selp-backend
     environment:
       - SPRING_PROFILES_ACTIVE=prod
