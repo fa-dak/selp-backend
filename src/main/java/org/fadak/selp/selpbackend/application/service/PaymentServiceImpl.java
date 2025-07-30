@@ -23,7 +23,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional
-    // TODO: 안되면 결제취소되게? 아니면 다시 실행되게?
+    // TODO: 안되면 결제 취소되게? 아니면 다시 실행되게?
     public void validateGiftBundle(long loginMemberId, long giftBundleId, PayRequestDto request) {
 
         // 선물 꾸러미 가져오기
