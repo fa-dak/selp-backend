@@ -20,7 +20,7 @@ public class ElasticQueryBuilder {
         Map<String, Object> knn = new HashMap<>();
         knn.put("field", "embedding");
         knn.put("k", topK);
-        knn.put("num_candidates", 300);
+        knn.put("num_candidates", 3000);
         knn.put("query_vector", vector);
 
         List<Map<String, Object>> must = new ArrayList<>();
@@ -30,12 +30,8 @@ public class ElasticQueryBuilder {
         }
 
         if (price > 0) {
-            if (applyExclude) {
-                int range = (int) (price * 0.2);
-                must.add(Map.of("range", Map.of("price", Map.of("gte", price - range, "lte", price + range))));
-            } else {
-                must.add(Map.of("range", Map.of("price", Map.of("lte", price))));
-            }
+            int maxPrice = (int) (price * 1.3);
+            must.add(Map.of("range", Map.of("price", Map.of("lte", maxPrice))));
         }
 
         if (applyExclude && excludeProductId != null) {

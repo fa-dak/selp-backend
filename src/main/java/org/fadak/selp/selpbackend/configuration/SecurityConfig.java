@@ -34,7 +34,9 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/swagger-ui.html",
                                 "/webjars/**",
-                                "/v3/api-docs/**")
+                                "/v3/api-docs/**",
+                                "/gift-bundle/recommend",
+                                "/gift-bundle/recommend-again")
                         .permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class); // 컨트롤러에 요청 도착하기 전 JWT 검증

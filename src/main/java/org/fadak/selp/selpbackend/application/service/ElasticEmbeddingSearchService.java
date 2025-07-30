@@ -41,7 +41,12 @@ public class ElasticEmbeddingSearchService {
     }
 
     private float[] getEmbedding(String text) {
-        var request = new EmbeddingRequest(List.of(text), OpenAiEmbeddingOptions.builder().build());
+        EmbeddingRequest request = new EmbeddingRequest(
+                List.of(text),
+                OpenAiEmbeddingOptions.builder()
+                        .model("text-embedding-3-large")
+                        .build()
+        );
         return embeddingModel.call(request).getResults().getFirst().getOutput();
     }
 }

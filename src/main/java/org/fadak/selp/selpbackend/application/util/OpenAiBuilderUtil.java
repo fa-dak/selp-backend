@@ -36,12 +36,13 @@ public class OpenAiBuilderUtil {
 
     public static String buildEmbeddingPrompt(GiftBundleRecommendRequestDto requestDto, String category, int budget) {
         return String.format(
-                "%s %s %s를 위한 선물입니다. 기념일은 %s이고, 카테고리는 %s입니다. 예산은 약 %d원이며, 요청사항은 '%s'입니다.",
-                requestDto.getAgeRange() + "세",
+                "%d대 %s %s를 위한 선물입니다. "
+                        + "기념일은 %s이고, 예산은 %d원입니다. "
+                        + "특징은 %s입니다.",
+                requestDto.getAgeRange(),
                 requestDto.getGender().getValue(),
                 requestDto.getRelation(),
                 requestDto.getAnniversaryType().getValue(),
-                category,
                 budget,
                 requestDto.getUserMessage()
         );
