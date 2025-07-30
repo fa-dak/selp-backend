@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.fadak.selp.selpbackend.domain.dto.request.EventListSearchRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.EventModifyRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.EventRegisterRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.response.EventDetailResponseDto;
 import org.fadak.selp.selpbackend.domain.dto.response.EventListResponseDto;
 import org.fadak.selp.selpbackend.domain.entity.Event;
 import org.fadak.selp.selpbackend.domain.repository.EventRepository;
@@ -78,7 +79,7 @@ public class EventServiceImpl implements EventService {
     public void modifyEvent(EventModifyRequestDto request, long eventId, long loginMemberId) {
 
         Event event = repository.findByIdAndReceiverInfo_Member_Id(eventId, loginMemberId)
-            .orElseThrow(IllegalStateException::new);
+            .orElseThrow(() -> new IllegalArgumentException("해당하는 이벤트가 없습니다."));
 
         event.setReceiverInfo(receiverInfoService.getReceiverInfo(request.getReceiverInfoId()));
         event.setEventType(request.getEventType());
@@ -87,5 +88,22 @@ public class EventServiceImpl implements EventService {
         event.setNotificationDaysBefore(request.getNotificationDaysBefore());
 
         repository.save(event);
+    }
+
+    @Override
+    public EventDetailResponseDto getEventDetail(long eventId, long loginMemberId) {
+
+        Event event = repository.findByIdAndReceiverInfo_Member_Id(eventId, loginMemberId)
+            .orElseThrow(() -> new IllegalArgumentException("해당하는 이벤트가 없습니다."));
+
+        return EventDetailResponseDto.builder()
+            .eventId(event.getId())
+            .eventName(event.getEventName())
+            .eventType(event.getEventType())
+            .eventDate(event.getEventDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+            .receiverId(event.getReceiverInfo().getId())
+            .receiverNickname(event.getReceiverInfo().getNickname())
+            .notificationDaysBefore(event.getNotificationDaysBefore())
+            .build();
     }
 }

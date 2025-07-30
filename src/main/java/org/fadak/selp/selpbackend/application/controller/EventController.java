@@ -8,6 +8,7 @@ import org.fadak.selp.selpbackend.domain.auth.UserPrincipal;
 import org.fadak.selp.selpbackend.domain.dto.request.EventListSearchRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.EventModifyRequestDto;
 import org.fadak.selp.selpbackend.domain.dto.request.EventRegisterRequestDto;
+import org.fadak.selp.selpbackend.domain.dto.response.EventDetailResponseDto;
 import org.fadak.selp.selpbackend.domain.dto.response.EventListResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,6 +40,17 @@ public class EventController {
         long loginMemberId = userPrincipal.getId();
         List<EventListResponseDto> eventList = eventService.getEventList(request, loginMemberId);
         return ResponseEntity.ok(eventList);
+    }
+
+    @GetMapping("/{event-id}")
+    public ResponseEntity<EventDetailResponseDto> getEventDetail(
+        @AuthenticationPrincipal UserPrincipal userPrincipal,
+        @PathVariable("event-id") long eventId
+    ) {
+
+        long loginMemberId = userPrincipal.getId();
+        EventDetailResponseDto eventDetail = eventService.getEventDetail(eventId, loginMemberId);
+        return ResponseEntity.ok(eventDetail);
     }
 
     @DeleteMapping("/{event-id}")
