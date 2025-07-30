@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleFileError(FileStorageException ex) {
 
         ErrorResponseDto body = new ErrorResponseDto("FILE_ERROR", ex.getMessage());
-        return ResponseEntity.status(500).body(body);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -46,22 +46,28 @@ public class GlobalExceptionHandler {
         IllegalArgumentException ex) {
 
         ErrorResponseDto body = new ErrorResponseDto("INTERNAL_ERROR", ex.getMessage());
-        return ResponseEntity.status(500).body(body);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
-    // 필요 시 다른 예외 핸들러 추가…
     @ExceptionHandler(GptException.class)
     public ResponseEntity<ErrorResponseDto> handleGptError(GptException ex) {
 
         ErrorResponseDto body = new ErrorResponseDto("GPT_ERROR", ex.getMessage());
-        return ResponseEntity.status(500).body(body);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
     @ExceptionHandler(MessageException.class)
     public ResponseEntity<ErrorResponseDto> handleMessageError(MessageException ex) {
 
         ErrorResponseDto body = new ErrorResponseDto("MESSAGE_ERROR", ex.getMessage());
-        return ResponseEntity.status(500).body(body);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseDto> handleAllExceptionError(MessageException ex) {
+
+        ErrorResponseDto body = new ErrorResponseDto("UNEXPECTED_ERROR", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
 

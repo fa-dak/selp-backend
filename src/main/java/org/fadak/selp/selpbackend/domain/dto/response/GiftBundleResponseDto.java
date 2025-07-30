@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import org.fadak.selp.selpbackend.domain.constant.EventType;
+import org.fadak.selp.selpbackend.domain.constant.PayStatus;
 import org.fadak.selp.selpbackend.domain.entity.Event;
 import org.fadak.selp.selpbackend.domain.entity.GiftBundle;
 import org.fadak.selp.selpbackend.domain.entity.Product;
@@ -29,6 +30,8 @@ public class GiftBundleResponseDto {
 
     private final List<ProductDto> products;
 
+    private final PayStatus currentPayStatus;
+
     public static GiftBundleResponseDto from(GiftBundle giftBundle, List<ProductDto> productDtos) {
 
         Event event = giftBundle.getEvent();
@@ -39,6 +42,7 @@ public class GiftBundleResponseDto {
 
         return GiftBundleResponseDto.builder()
             .giftBundleId(giftBundle.getId())
+            .currentPayStatus(giftBundle.getCurrentPayStatus())
             .createdDate(formattedCreatedDate)
             .eventId(event.getId())
             .eventType(event.getEventType())
