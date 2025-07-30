@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
-@ToString
 @NoArgsConstructor
+@ToString
 public class PortOneTokenRequest {
 
     @JsonProperty("imp_key")
@@ -16,9 +16,7 @@ public class PortOneTokenRequest {
     @JsonProperty("imp_secret")
     private String impSecret;
 
-    public PortOneTokenRequest(
-        @JsonProperty("imp_key") String impKey,
-        @JsonProperty("imp_secret") String impSecret) {
+    public PortOneTokenRequest(String impKey, String impSecret) {
 
         this.impKey = impKey;
         this.impSecret = impSecret;

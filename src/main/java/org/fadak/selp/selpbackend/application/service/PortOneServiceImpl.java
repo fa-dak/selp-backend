@@ -97,9 +97,7 @@ public class PortOneServiceImpl implements PortOneService {
 
         String url = "https://api.iamport.kr/users/getToken";
 
-//        PortOneTokenRequest requestBody = new PortOneTokenRequest(iamportKey, iamportSecret);
-        PortOneTokenRequest requestBody = new PortOneTokenRequest("5107228850842827",
-            "Ji4dDJhzNQaSS2IPGeuv89Y4Pk9Taa10whyV8xXbBTFp1F4GXRvN35Z4LFZKYoD9fkbqQdDNy2PrQipJ");
+        PortOneTokenRequest requestBody = new PortOneTokenRequest(iamportKey, iamportSecret);
 
         ObjectMapper mapper = new ObjectMapper();
         try {
