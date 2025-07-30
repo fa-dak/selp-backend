@@ -34,7 +34,7 @@ public class PortOneServiceImpl implements PortOneService {
     @Value("${iamport.secret}")
     private String iamportSecret;
 
-    private static final int MAX_RETRIES = 10;
+    private static final int MAX_RETRIES = 20;
     private static final long RETRY_DELAY_MS = 500; // 0.5초 간격 재시도
 
     @Override
@@ -105,6 +105,49 @@ public class PortOneServiceImpl implements PortOneService {
         throw new IllegalArgumentException("결제 취소 실패 (최대 재시도 초과)");
     }
 
+    private String getPortOneAccessToken() {
+
+        String url = "https://api.iamport.kr/users/getToken";
+        PortOneTokenRequest requestBody = new PortOneTokenRequest(iamportKey, iamportSecret);
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            log.info("보낼 JSON: {}", mapper.writeValueAsString(requestBody));
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("직렬화 실패: " + e.getMessage(), e);
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+        HttpEntity<PortOneTokenRequest> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        for (int i = 1; i <= MAX_RETRIES; i++) {
+            try {
+                ResponseEntity<PortOneTokenResponse> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    requestEntity,
+                    PortOneTokenResponse.class
+                );
+
+                PortOneTokenResponse body = response.getBody();
+                if (body != null && body.code() == 0 && body.response() != null) {
+                    return body.response().accessToken();
+                }
+
+                log.warn("토큰 발급 실패 ({}회차): {}", i, body != null ? body.message() : "응답 body 없음");
+            } catch (Exception e) {
+                log.warn("토큰 발급 예외 발생 ({}회차): {}", i, e.getMessage());
+            }
+
+            sleepRetry(i);
+        }
+
+        throw new IllegalArgumentException("액세스 토큰 발급 실패 (최대 재시도 초과)");
+    }
+
     // 재시도 간 대기 로직
     private void sleepRetry(int attempt) {
 
@@ -173,40 +216,40 @@ public class PortOneServiceImpl implements PortOneService {
 //
 //        return body.response();
 //    }
-
-    private String getPortOneAccessToken() {
-
-        String url = "https://api.iamport.kr/users/getToken";
-
-        PortOneTokenRequest requestBody = new PortOneTokenRequest(iamportKey, iamportSecret);
-
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            log.info("보낼 JSON: {}",
-                mapper.writeValueAsString(new PortOneTokenRequest(iamportKey, iamportSecret)));
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-
-        HttpEntity<PortOneTokenRequest> requestEntity = new HttpEntity<>(requestBody, headers);
-
-        ResponseEntity<PortOneTokenResponse> response = restTemplate.exchange(
-            url,
-            HttpMethod.POST,
-            requestEntity,
-            PortOneTokenResponse.class
-        );
-
-        PortOneTokenResponse body = response.getBody();
-        if (body == null || body.code() != 0 || body.response() == null) {
-            throw new IllegalArgumentException(
-                "액세스 토큰 발급 실패: " + (body != null ? body.message() : "응답 없음"));
-        }
-
-        return body.response().accessToken();
-    }
+//
+//    private String getPortOneAccessToken() {
+//
+//        String url = "https://api.iamport.kr/users/getToken";
+//
+//        PortOneTokenRequest requestBody = new PortOneTokenRequest(iamportKey, iamportSecret);
+//
+//        ObjectMapper mapper = new ObjectMapper();
+//        try {
+//            log.info("보낼 JSON: {}",
+//                mapper.writeValueAsString(new PortOneTokenRequest(iamportKey, iamportSecret)));
+//        } catch (JsonProcessingException e) {
+//            throw new IllegalArgumentException(e.getMessage());
+//        }
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+//
+//        HttpEntity<PortOneTokenRequest> requestEntity = new HttpEntity<>(requestBody, headers);
+//
+//        ResponseEntity<PortOneTokenResponse> response = restTemplate.exchange(
+//            url,
+//            HttpMethod.POST,
+//            requestEntity,
+//            PortOneTokenResponse.class
+//        );
+//
+//        PortOneTokenResponse body = response.getBody();
+//        if (body == null || body.code() != 0 || body.response() == null) {
+//            throw new IllegalArgumentException(
+//                "액세스 토큰 발급 실패: " + (body != null ? body.message() : "응답 없음"));
+//        }
+//
+//        return body.response().accessToken();
+//    }
 }
