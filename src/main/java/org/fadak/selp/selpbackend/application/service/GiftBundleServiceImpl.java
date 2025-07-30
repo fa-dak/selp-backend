@@ -48,6 +48,12 @@ public class GiftBundleServiceImpl implements GiftBundleService {
             .orElseThrow(IllegalArgumentException::new);
     }
 
+    @Override
+    public GiftBundle save(GiftBundle giftBundle) {
+
+        return giftBundleRepository.save(giftBundle);
+    }
+
     /**
      * GiftBundle 엔티티를 GiftBundleResponseDto로 변환하는 헬퍼 메소드.
      */

@@ -23,14 +23,21 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional
+    // TODO: 안되면 결제취소되게? 아니면 다시 실행되게?
     public void validateGiftBundle(long loginMemberId, long giftBundleId, PayRequestDto request) {
 
-        // 상품 꾸러미 가져오기
+        // 선물 꾸러미 가져오기
         GiftBundle giftBundle = giftBundleService.searchById(giftBundleId, loginMemberId);
         log.info("Gift Bundle: {}", giftBundle);
 
-        // TODO: 상품꾸러미에 결제 여부 보기
-        // TODO: 이미 결제한 물품이면 결제 X (예외 처리)
+        // 선물 꾸러미의 최근 결제 상태가 "결제"면 결제 불가
+        if (giftBundle.getCurrentPayStatus().equals(PayStatus.PAID)) {
+            throw new IllegalArgumentException("선물 꾸러미가 이미 결제되었습니다.");
+        }
+
+        // 선물 꾸러미의 최근 결제 상태 "결제"로 변경
+        giftBundle.setCurrentPayStatus(PayStatus.PAID);
+        giftBundleService.save(giftBundle);
 
         // Iamport 에서 가져오기
         PortOnePaymentVerifyResponse response = portOneService.getPaymentByImpUid(
@@ -40,7 +47,7 @@ public class PaymentServiceImpl implements PaymentService {
             throw new IllegalArgumentException("Gift Bundle is not paid");
         }
 
-        // 결제 DB에 결제 정보 저장
+        // 결제 성공 정보 저장
         Payment payment = Payment.builder()
             .giftBundle(giftBundle)
             .impUid(response.getImpUid())
@@ -54,23 +61,39 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public void cancelGiftBundle(long loginMemberId, Long giftBundleId) {
 
-        // 상품 꾸러미 가져오기
+        // 선물 꾸러미 가져오기
         GiftBundle giftBundle = giftBundleService.searchById(giftBundleId, loginMemberId);
         log.info("Gift Bundle: {}", giftBundle);
 
-        // TODO: 상품 꾸러미 결제 상태 취소로 변경하기
+        // 선물 꾸러미 최근 상태가 "결제"가 아니면 예외 발생
+        if (!giftBundle.getCurrentPayStatus().equals(PayStatus.PAID)) {
+            throw new IllegalArgumentException("해당 선물 꾸러미의 최근 상태가 \"결제\"가 아닙니다.");
+        }
 
-        // 결제 정보 가져오기
-        Payment payment = paymentRepository.findByGiftBundleAndStatus(giftBundle, PayStatus.PAID)
-            .orElseThrow(() -> new IllegalArgumentException("해당 상품 꾸러미가 결제 완료된 결제 정보가 없습니다."));
-        log.info("Payment: {}", payment);
+        // 선물 꾸러미의 최근 결제 상태를 "취소"로 변경
+        giftBundle.setCurrentPayStatus(PayStatus.CANCEL);
+        giftBundleService.save(giftBundle);
 
-        // 결제 정보 삭제 (TODO: 취소할 건지 지울 건지 선택 맘대루)
-//        payment.setStatus(PayStatus.CANCEL);
-        paymentRepository.delete(payment);
+        // 해당 선물 꾸러미에 해당하는 최근 결제 정보 가져오기
+        Payment currentPayment = paymentRepository.findTopByGiftBundleOrderByCreatedDateDesc(
+                giftBundle)
+            .orElseThrow(() -> new IllegalArgumentException("해당 선물 꾸러미와 관련된 결제 정보가 없습니다."));
 
-        // Iamport에 결제 취소 요청
-        portOneService.cancel(payment.getImpUid(), payment.getAmount());
+        // 최근 결제 정보가 "실패"면 예외
+        if (currentPayment.getStatus().equals(PayStatus.CANCEL)) {
+            throw new IllegalArgumentException("이미 최근에 결제 취소된 상품 꾸러미입니다.");
+        }
 
+        // 결제 취소 정보 저장
+        Payment newPayment = Payment.builder()
+            .giftBundle(giftBundle)
+            .impUid(currentPayment.getImpUid())
+            .amount(currentPayment.getAmount())
+            .status(PayStatus.CANCEL)
+            .build();
+        paymentRepository.save(newPayment);
+
+        // Iamport에 결제 취소 요청 (꼭!!!!!! 트랜잭션의 마지막에 있어야 함)
+        portOneService.cancel(currentPayment.getImpUid(), currentPayment.getAmount());
     }
 }

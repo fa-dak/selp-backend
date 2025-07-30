@@ -45,7 +45,7 @@ public class Payment extends BaseEntity {
 
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING)
-    private PayStatus status;
+    private PayStatus status = PayStatus.NOT_STARTED;
 
     @Builder
     public Payment(GiftBundle giftBundle, String impUid, int amount, PayStatus status) {

@@ -19,4 +19,6 @@ public interface GiftBundleService {
     GiftBundleResponseDto getMyGiftBundleDetail(Long bundleId, Long memberId);
 
     GiftBundle searchById(Long giftBundleId, long loginMemberId);
+
+    GiftBundle save(GiftBundle giftBundle);
 }
