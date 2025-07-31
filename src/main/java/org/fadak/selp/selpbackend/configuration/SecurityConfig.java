@@ -35,8 +35,6 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/webjars/**",
                                 "/v3/api-docs/**",
-                                "/gift-bundle/recommend",
-                                "/gift-bundle/recommend-again",
                                 "/gift-bundle/recommend")
                         .permitAll()
                         .anyRequest().authenticated())
