@@ -36,7 +36,8 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/v3/api-docs/**",
                                 "/gift-bundle/recommend",
-                                "/gift-bundle/recommend-again")
+                                "/gift-bundle/recommend-again",
+                                "/gift-bundle/recommend")
                         .permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class); // 컨트롤러에 요청 도착하기 전 JWT 검증
