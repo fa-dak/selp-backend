@@ -7,7 +7,7 @@ public class OpenAiBuilderUtil {
     public static String buildBudgetSplitPrompt(GiftBundleRecommendRequestDto dto) {
         return """
                 아래는 선물 구성 조건입니다:
-                - 총 예산: %,d원
+                - 총 예산: %d원
                 - 연령: %s
                 - 성별: %s
                 - 관계: %s
