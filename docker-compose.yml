@@ -10,6 +10,7 @@ services:
       - "35002:8080"
     networks:
       - selp_network
+      - harbor_harbor
     cpus: 1
     mem_limit: 2g
 
